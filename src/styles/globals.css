@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@theme {
+  --breakpoint-*: initial;
+  --breakpoint-sm: 480px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --color-primary: #153c63;
+  --color-second: #155f82;
+  --color-primary-hover: #028d4c;
+  --color-button: #016236;
+  --color-bg: #f0f3f8;
+  --color-muted: #293B0D;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
