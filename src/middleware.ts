@@ -5,7 +5,7 @@ import type { NextRequest } from "next/server";
 const publicRoutes = ["/login", "/register", "/forgot-password"];
 
 export function middleware(req: NextRequest) {
-  const token = req.cookies.get("token")?.value || null;
+  const token = req.cookies.get("access_token")?.value || null;
   const { pathname } = req.nextUrl;
 
   // === Nếu user chưa login ===
@@ -15,7 +15,6 @@ export function middleware(req: NextRequest) {
       return NextResponse.next();
     }
 
-    // còn lại → redirect về /login
     return NextResponse.redirect(new URL("/login", req.url));
   }
 

@@ -2,51 +2,53 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface User {
   id: number;
-  name: string;
+  username: string;
   email: string;
-  phone: string;
-  roles: []
+  fullName: string;
+  phoneNumber: string;
   // ... thêm nếu cần
 }
 
 interface AuthState {
   user: User | null;
-  accessToken: string | null;
-  refreshToken: string | null;
-  isRedirecting: boolean;
+  access_token: string | null;
+  refresh_token: string | null;
+  // isRedirecting: boolean;
 }
 
 const initialState: AuthState = {
   user: null,
-  accessToken: null,
-  refreshToken: null,
-  isRedirecting: false,
+  access_token: null,
+  refresh_token: null,
+  // isRedirecting: false,
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<User>) => {
-      state.user = action.payload;
+    loginUserState: (state, action: PayloadAction<AuthState>) => {
+      state.access_token = action.payload.access_token;
+      state.refresh_token = action.payload.refresh_token;
+      state.user = action.payload.user;
     },
-
-    setAccessToken: (state, action: PayloadAction<string>) => {
-      state.accessToken = action.payload;
-    },
-    setRefreshToken: (state, action: PayloadAction<string>) => {
-      state.refreshToken = action.payload;
-    },
-    logoutUser: (state) => {
-      state.accessToken = null;
-      state.refreshToken = null;
+    logoutUserState: (state) => {
+      state.access_token = null;
+      state.refresh_token = null;
       state.user = null;
     },
-    setIsRedirecting(state, action: PayloadAction<boolean>) {
-      state.isRedirecting = action.payload;
+    updateUserState: (state, action: PayloadAction<Partial<User>>) => {
+      if (!state.user) return;
+      state.user = {
+        ...state.user,
+        ...action.payload,
+      };
     },
+    // setIsRedirecting(state, action: PayloadAction<boolean>) {
+    //   state.isRedirecting = action.payload;
+    // },
   },
 });
 
-export const { setUser, setAccessToken, setRefreshToken, logoutUser, setIsRedirecting  } = authSlice.actions;
+export const { loginUserState, logoutUserState, updateUserState  } = authSlice.actions;
 export default authSlice.reducer;

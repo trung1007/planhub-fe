@@ -2,22 +2,52 @@
 
 import { useForm } from "react-hook-form";
 import { FaRocket } from "react-icons/fa";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useForgotPassword, useResetPassword } from "@/hooks/useAuth";
+import { toast } from "react-toastify";
 
 const ForgotPasswordPage = () => {
   const router = useRouter();
-
+  const searchParams = useSearchParams();
+  const resetPasswordToken = searchParams.get("token");
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
+
   } = useForm();
 
-  const onSubmit = async (data: any) => {
-    console.log("Forgot password data:", data);
+  const { mutate, isPending } = useForgotPassword();
 
-    // Gọi API gửi email reset mật khẩu tại đây
-    // const res = await fetch("/api/forgot-password", {...})
+  const { mutate: resetMutate, isPending: isResetPending } = useResetPassword();
+
+  const onSubmit = async (data: any) => {
+    if (!resetPasswordToken) {
+      mutate({ email: data.email }, {
+        onSuccess: () => {
+          toast.success("Reset link has been sent to your email");
+        },
+        onError: (err: any) => {
+          toast.error(err?.response?.data?.message || "Something went wrong");
+        },
+      });
+    }
+    else {
+      resetMutate(
+        { token: resetPasswordToken, newPassword: data.password },
+        {
+          onSuccess: () => {
+            toast.success("Password has been reset successfully");
+            router.push("/login");
+          },
+          onError: (err: any) => {
+            toast.error(err?.response?.data?.message || "Something went wrong");
+          },
+        }
+      );
+    }
+
   };
 
   return (
@@ -35,22 +65,57 @@ const ForgotPasswordPage = () => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Email */}
-          <input
-            type="email"
-            placeholder="Your email address"
-            className="w-full border p-2 rounded focus:outline-blue-500"
-            {...register("email", {
-              required: "Email is required",
-              pattern: {
-                value:
-                  /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-                message: "Invalid email address",
-              },
-            })}
-          />
-          {errors.email && (
-            <p className="text-red-500 text-sm">{errors.email.message as string}</p>
+          {/* Email input - chỉ hiện khi không có token */}
+          {!resetPasswordToken && (
+            <>
+              <input
+                type="email"
+                placeholder="Your email address"
+                className="w-full border p-2 rounded focus:outline-blue-500"
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+                    message: "Invalid email address",
+                  },
+                })}
+              />
+              {errors.email && (
+                <p className="text-red-500 text-sm">{errors.email.message as string}</p>
+              )}
+            </>
+          )}
+
+          {/* New password input - chỉ hiện khi có token */}
+          {resetPasswordToken && (
+            <>
+              <input
+                type="password"
+                placeholder="New password"
+                className="w-full border p-2 rounded focus:outline-blue-500"
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: { value: 6, message: "Min length is 6" },
+                })}
+              />
+              {errors.password?.message && (
+                <p className="text-red-500 text-sm">{String(errors.password.message)}</p>
+              )}
+
+              <input
+                type="password"
+                placeholder="Confirm new password"
+                className="w-full border p-2 rounded focus:outline-blue-500"
+                {...register("confirmPassword", {
+                  required: "Please confirm your password",
+                  validate: (val) =>
+                    val === watch("password") || "Passwords do not match",
+                })}
+              />
+              {errors.confirmPassword && (
+                <p className="text-red-500 text-sm">{String(errors.confirmPassword.message)}</p>
+              )}
+            </>
           )}
 
           <div className="flex flex-col items-start gap-4">
@@ -65,7 +130,7 @@ const ForgotPasswordPage = () => {
                 }
               }}
             >
-              Remember password?{" "}
+              {resetPasswordToken ? "Remember password? " : "Back to login? "}
               <span className="text-second font-medium hover:underline hover:text-primary transition-all">
                 Log in
               </span>
@@ -73,16 +138,21 @@ const ForgotPasswordPage = () => {
 
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isPending}
               className="bg-second text-white p-2 rounded hover:bg-primary"
             >
-              {isSubmitting ? "Sending..." : "Send reset link"}
+              {(isSubmitting || isPending)
+                ? "Sending..."
+                : resetPasswordToken
+                  ? "Reset Password"
+                  : "Send reset link"}
             </button>
           </div>
         </form>
       </div>
     </div>
   );
+
 };
 
 export default ForgotPasswordPage;

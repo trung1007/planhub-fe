@@ -1,0 +1,33 @@
+import {
+  changePassword,
+  getUserById,
+  updateUser,
+} from "@/services/user.service";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useAppDispatch } from "./reduxHook";
+import { updateUserState } from "@/stores/auth/authSlice";
+
+export const useUserDetail = (id: number) => {
+  return useQuery({
+    queryKey: ["userDetail", id],
+    queryFn: () => getUserById(id),
+    enabled: !!id,
+  });
+};
+
+export const useUpdateUser = () => {
+  const dispatch = useAppDispatch();
+
+  return useMutation({
+    mutationFn: ({ id, data }: any) => updateUser(id, data),
+    onSuccess: (updatedUser) => {
+      // updatedUser là object User backend trả về
+      dispatch(updateUserState(updatedUser));
+    },
+  });
+};
+export const useChangePassword = () => {
+  return useMutation({
+    mutationFn: ({ id, data }: any) => changePassword(id, data),
+  });
+};

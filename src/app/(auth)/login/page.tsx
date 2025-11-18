@@ -29,17 +29,11 @@ const LoginPage = () => {
             ? { email: data.account, password: data.password }
             : { username: data.account, password: data.password };
 
-        console.log("Payload gửi lên backend:", payload);
 
         mutate(payload, {
             onSuccess: (res) => {
-                console.log("Response", res);
-                // if (res?.user?.roles?.some((role: any) => role.name === "ROLE_ADMIN")) {
-                //     router.push("/admin");
-                //     return;
-                // } else {
-                //     router.push("/");
-                // }
+                router.push("/");
+                toast.success("Login Successful");
             },
             onError: (error: any) => {
                 const errorMessage =
