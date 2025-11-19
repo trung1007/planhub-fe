@@ -2,17 +2,15 @@ import { z } from "zod";
 
 export const RegisterSchema = z
   .object({
-    fullName: z.string().min(1, "Vui lòng nhập họ và tên"),
-
-    username: z.string().min(1, "Vui lòng nhập tên đăng nhập"),
-
-    email: z.string().min(1, "Vui lòng nhập email").email("Email không hợp lệ"),
-
+    fullName: z.string().nonempty("Vui lòng nhập họ và tên"),
+    username: z.string().nonempty("Vui lòng nhập tên đăng nhập"),
+    email: z
+      .string()
+      .nonempty("Vui lòng nhập email")
+      .email("Email không hợp lệ"),
     phoneNumber: z.string().optional(),
-
     password: z.string().min(6, "Mật khẩu tối thiểu 6 ký tự"),
-
-    confirmPassword: z.string().min(1, "Vui lòng xác nhận mật khẩu"),
+    confirmPassword: z.string().nonempty("Vui lòng xác nhận mật khẩu"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Mật khẩu xác nhận không khớp",

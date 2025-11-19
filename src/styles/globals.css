@@ -21,3 +21,7 @@ body {
   margin: 0;
   padding: 0;
 }
+
+.custom-modal .ant-modal-content {
+  padding: 0 !important;
+}

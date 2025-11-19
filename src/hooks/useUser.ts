@@ -1,4 +1,5 @@
 import {
+  addUser,
   changePassword,
   getAllUser,
   getUserById,
@@ -7,12 +8,19 @@ import {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAppDispatch } from "./reduxHook";
 import { updateUserState } from "@/stores/auth/authSlice";
+import { RegisterInput } from "@/schemas/user.schema";
 
 export const useAllUser = (page: number = 1, limit: number = 10) => {
   return useQuery({
     queryKey: ["allUsers", page, limit],
     queryFn: () => getAllUser(page, limit),
-    placeholderData: (prev) => prev, // giúp UI mượt khi chuyển trang
+    placeholderData: (prev) => prev,
+  });
+};
+
+export const useAddUser = () => {
+  return useMutation({
+    mutationFn: (data: RegisterInput) => addUser(data),
   });
 };
 

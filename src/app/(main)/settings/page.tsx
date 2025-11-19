@@ -27,9 +27,9 @@ const SettingsPage = () => {
                             key={item.key}
                             onClick={() => setActiveKey(item.key)}
                             className={`
-                flex items-center gap-3 px-3 py-3 text-sm rounded-md text-left
-                hover:bg-gray-100 transition
-                ${activeKey === item.key ? "bg-gray-100 font-medium" : ""}
+                flex items-center gap-3 px-3 py-3 text-sm text-left
+                hover:bg-background transition
+                ${activeKey === item.key ? "bg-background font-medium" : ""}
               `}
                         >
                             <span className="text-lg">{item.icon}</span>
