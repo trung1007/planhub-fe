@@ -1,10 +1,12 @@
-import { RegisterInput, RegisterSchema } from "@/schemas/user.schema";
+import { CreateUserInput, CreateUserSchema, RegisterInput, RegisterSchema } from "@/schemas/user.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input, Modal } from "antd";
 import { Controller, useForm } from "react-hook-form";
 import FormRow from "../FormRow";
 import { useAddUser } from "@/hooks/useUser";
 import { toast } from "react-toastify";
+import { useAppSelector } from "@/hooks/reduxHook";
+import { useEffect } from "react";
 
 interface AddUserModalProps {
   openAdd: boolean;
@@ -17,9 +19,10 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ openAdd, setOpenAdd }) => {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<RegisterInput>({
-    resolver: zodResolver(RegisterSchema),
+  } = useForm<CreateUserInput>({
+    resolver: zodResolver(CreateUserSchema),
     defaultValues: {
+      createdUserId: null,
       fullName: "",
       username: "",
       email: "",
@@ -29,18 +32,28 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ openAdd, setOpenAdd }) => {
     },
   });
 
-  const { mutate, isPending } = useAddUser();
+  const currentUser = useAppSelector((state) => state.auth.user);
 
-  const handleSave = (data: RegisterInput) => {
-    mutate(data, {
-      onSuccess: () => {
-        toast.success("Add User Successfully");
-        setOpenAdd(false);
-      },
-      onError: (error: any) => {
-        toast.error("Đăng ký thất bại:", error?.message);
-      },
-    });
+  const { mutate, isPending } = useAddUser();
+  
+  const handleSave = (data: CreateUserInput) => {
+    if (currentUser) {
+      data.createdUserId = currentUser.id;
+      mutate(data, {
+        onSuccess: () => {
+          toast.success("Add User Successfully");
+          setOpenAdd(false);
+        },
+        onError: (error: any) => {
+          toast.error("Đăng ký thất bại:", error?.message);
+        },
+      });
+    }
+    else {
+      console.error("Người dùng ko xác định");
+
+    }
+
   };
 
   return (

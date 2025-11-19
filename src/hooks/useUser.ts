@@ -5,22 +5,36 @@ import {
   getUserById,
   updateUser,
 } from "@/services/user.service";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useAppDispatch } from "./reduxHook";
 import { updateUserState } from "@/stores/auth/authSlice";
 import { RegisterInput } from "@/schemas/user.schema";
+import { usePathname, useRouter } from "next/navigation";
 
 export const useAllUser = (page: number = 1, limit: number = 10) => {
   return useQuery({
     queryKey: ["allUsers", page, limit],
     queryFn: () => getAllUser(page, limit),
-    placeholderData: (prev) => prev,
+    placeholderData: keepPreviousData,
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
   });
 };
 
 export const useAddUser = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: RegisterInput) => addUser(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["allUsers"] });
+    },
   });
 };
 
@@ -34,12 +48,19 @@ export const useUserDetail = (id: number) => {
 
 export const useUpdateUser = () => {
   const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
+  const pathname = usePathname();
 
   return useMutation({
     mutationFn: ({ id, data }: any) => updateUser(id, data),
     onSuccess: (updatedUser) => {
       // updatedUser là object User backend trả về
       dispatch(updateUserState(updatedUser));
+      if (!pathname.includes("user")) {
+        console.log("fetching");
+        
+        queryClient.invalidateQueries({ queryKey: ["allUsers"] });
+      }
     },
   });
 };

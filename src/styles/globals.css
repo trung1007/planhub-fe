@@ -25,3 +25,39 @@ body {
 .custom-modal .ant-modal-content {
   padding: 0 !important;
 }
+
+.custom-table .ant-table-thead>tr>th {
+  background-color: #f2f2f2 !important;
+  color: black !important;
+  font-weight: seminbold !important;
+}
+
+.tabs-full .ant-tabs-content-holder,
+.tabs-full .ant-tabs-content,
+.tabs-full .ant-tabs-tabpane {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE + Edge */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari */
+}
+
+.email-ellipsis {
+  display: inline-block;
+  max-width: 15ch;
+  /* tương đương 15 ký tự */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}

@@ -8,7 +8,7 @@ export const registerUser = async (data: RegisterInput) => {
 };
 
 export const addUser = async (data: RegisterInput) => {
-  const response = await api.post("/users", data);
+  const response = await api.post("/userservice/users", data);
   return response.data;
 };
 
@@ -31,24 +31,24 @@ export const logout = async (refreshToken: string) => {
 };
 
 export const getAllUser = async (page: number = 1, limit: number = 10) => {
-  const response = await api.get(`/users`, {
+  const response = await api.get(`/userservice/users`, {
     params: { page, limit },
   });
   return response.data;
 };
 
 export const getUserById = async (id: number) => {
-  const response = await api.get(`/users/${id}`);
+  const response = await api.get(`/userservice/users/${id}`);
   return response.data;
 };
 
 export const updateUser = async (id: number, data: any) => {
-  const response = await api.put(`/users/${id}`, data);
+  const response = await api.put(`/userservice/users/${id}`, data);
   return response.data;
 };
 
 export const changePassword = async (id: number, data: any) => {
-  const response = await api.put(`/users/change-password/${id}`, data);
+  const response = await api.put(`/userservice/users/change-password/${id}`, data);
   return response.data;
 };
 
