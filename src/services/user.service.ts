@@ -25,6 +25,13 @@ export const logout = async (refreshToken: string) => {
   return response.data;
 };
 
+export const getAllUser = async (page: number = 1, limit: number = 10) => {
+  const response = await api.get(`/users`, {
+    params: { page, limit },
+  });
+  return response.data;
+};
+
 export const getUserById = async (id: number) => {
   const response = await api.get(`/users/${id}`);
   return response.data;
@@ -40,13 +47,12 @@ export const changePassword = async (id: number, data: any) => {
   return response.data;
 };
 
-export const forgotPassword = async (email:string) => {
-  const response = await api.post(`/auth/forgot-password`, {email});
+export const forgotPassword = async (email: string) => {
+  const response = await api.post(`/auth/forgot-password`, { email });
   return response.data;
 };
 
-export const resetPassword = async (data:any) => {
+export const resetPassword = async (data: any) => {
   const response = await api.post(`/auth/reset-password`, data);
   return response.data;
 };
-

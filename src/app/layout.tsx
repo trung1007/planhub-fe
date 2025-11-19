@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import '@/styles/globals.css';
 import Providers from "@/providers";
 import Header from "@/components/layout/Header";
+import SideBar from "@/components/layout/SideBar";
+import MainFrame from "@/components/layout/MainFrame";
 
 
 
@@ -23,7 +25,15 @@ export default function RootLayout({
       <body>
         <Providers>
           <Header />
-          {children}
+          <div className="flex h-screen">
+            <SideBar />
+
+            {/* Content */}
+            <MainFrame>
+              {children}
+            </MainFrame>
+            {/* <main className="flex-1 p-6">{children}</main> */}
+          </div>
         </Providers>
       </body>
     </html>

@@ -1,11 +1,20 @@
 import {
   changePassword,
+  getAllUser,
   getUserById,
   updateUser,
 } from "@/services/user.service";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAppDispatch } from "./reduxHook";
 import { updateUserState } from "@/stores/auth/authSlice";
+
+export const useAllUser = (page: number = 1, limit: number = 10) => {
+  return useQuery({
+    queryKey: ["allUsers", page, limit],
+    queryFn: () => getAllUser(page, limit),
+    placeholderData: (prev) => prev, // giúp UI mượt khi chuyển trang
+  });
+};
 
 export const useUserDetail = (id: number) => {
   return useQuery({
