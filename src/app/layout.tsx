@@ -25,7 +25,7 @@ export default function RootLayout({
       <body>
         <Providers>
           <Header />
-          <div className="flex h-screen">
+          <div className="flex h-full">
             <SideBar />
 
             {/* Content */}

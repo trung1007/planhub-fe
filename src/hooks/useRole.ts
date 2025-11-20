@@ -1,4 +1,11 @@
-import { createRole, editRole, getAllRole } from "@/services/role.service";
+import {
+  createRole,
+  deleteRole,
+  editRole,
+  getAllPermissions,
+  getAllPermissionsIds,
+  getAllRole,
+} from "@/services/role.service";
 import {
   keepPreviousData,
   useMutation,
@@ -18,6 +25,25 @@ export const useAllRole = (page: number = 1, limit: number = 10) => {
   });
 };
 
+export const useAllPermissions = (page: number = 1, limit: number = 10) => {
+  return useQuery({
+    queryKey: ["permissions", page, limit],
+    queryFn: () => getAllPermissions(page, limit),
+    placeholderData: keepPreviousData,
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+  });
+};
+export const useAllPermissionIds = () => {
+  return useQuery({
+    queryKey: ["permission_ids"],
+    queryFn: getAllPermissionsIds,
+    enabled: false,
+    staleTime: 5 * 60 * 1000, // cache 5 phút
+  });
+};
 export const useAddRole = () => {
   const queryClient = useQueryClient();
 
@@ -33,7 +59,18 @@ export const useEditRole = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: any) => editRole(data, id),
+    mutationFn: ({ id, data }: any) => editRole(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["roles"] });
+    },
+  });
+};
+
+export const useDeleteRole = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: number) => deleteRole(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["roles"] });
     },

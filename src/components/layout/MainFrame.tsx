@@ -21,12 +21,12 @@ const MainFrame = ({ children }: MainFrameProps) => {
         setActiveMenu(active);
     }, [pathname]);
     if (pathname === "/login" || pathname === '/forgot-password' || pathname === '/register') return (
-        <div className="flex-1 w-full h-screen">
+        <div className="flex-1 w-full h-full">
             {children}
         </div>
     );
     return (
-        <div className="px-6 py-3 flex-1 w-full h-screen bg-background flex flex-col ">
+        <div className="px-6 py-3 flex-1 w-full h-full bg-background flex flex-col ">
             <BreadCrumb
                 items={[
                     { label: "Home", href: "/" },

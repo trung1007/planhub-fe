@@ -66,8 +66,8 @@ const RoleModal: React.FC<RoleModalProps> = ({
     }, [defaultValues, reset, currentUser, role]);
 
     const title = mode === "add" ? "Add Role" : "Edit Role";
-    const { mutate:mutationAdd, isPending:isAdding } = useAddRole();
-    const { mutate:mutationEdit, isPending:isEditing } = useEditRole();
+    const { mutate: mutationAdd, isPending: isAdding } = useAddRole();
+    const { mutate: mutationEdit, isPending: isEditing } = useEditRole();
 
     const handleAdd = (data: ActionRoleInput) => {
         if (currentUser) {
@@ -109,7 +109,7 @@ const RoleModal: React.FC<RoleModalProps> = ({
                 description: data.description,
                 updatedUserId: data.actionUserId
             }
-            mutationEdit({ id: role.id, payload }, {
+            mutationEdit({ id: role.id, data: payload }, {
                 onSuccess: () => {
                     toast.success("Role edited successfully!");
                     setOpen(false);

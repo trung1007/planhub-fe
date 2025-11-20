@@ -5,10 +5,12 @@ import { ColumnsType } from "antd/es/table";
 import EditUserModal from "./modal/EditUserModal";
 
 import RoleModal from "./modal/RoleModal";
-import { useAllRole } from "@/hooks/useRole";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { useAllRole, useDeleteRole } from "@/hooks/useRole";
+import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
+import { toast } from "react-toastify";
+import RolePermissionTabContent from "./RolePermissionTabContent";
 
-const RoleTabContent = () => {
+const RoleTabContent = ({ roleScreen, setRoleScreen, selectedRole, setSelectedRole }: any) => {
     const [page, setPage] = useState(1);
     const limit = 6;
 
@@ -17,18 +19,28 @@ const RoleTabContent = () => {
 
     const [openEdit, setOpenEdit] = useState(false);
     const [selectedUser, setSelectedUser] = useState<any>(null);
-
+    const handleView = (record: any) => {
+        setSelectedRole(record);
+        setRoleScreen("permission");
+    };
     const handleEdit = (record: any) => {
-        console.log(record);
-        
+
         setSelectedUser(record);
         setOpenEdit(true);
     };
 
+    const { mutate, isPending: isDeleting } = useDeleteRole()
+
 
     const handleDelete = (record: any) => {
-        console.log("Delete user:", record);
-        // gọi API xóa user
+        mutate(record.id, {
+            onSuccess: () => {
+                toast.success("Delete role successful");
+            },
+            onError: () => {
+                toast.error("XDelete role failed");
+            }
+        });
     };
 
 
@@ -86,6 +98,9 @@ const RoleTabContent = () => {
             fixed: "right" as const,
             render: (_: any, record: any) => (
                 <div className="flex gap-1">
+                    <Button size="small" type="default" onClick={() => handleView(record)}>
+                        <FaEye />
+                    </Button>
                     <Button size="small" type="primary" onClick={() => handleEdit(record)}>
                         <FaEdit />
                     </Button>
@@ -102,7 +117,15 @@ const RoleTabContent = () => {
         },
     ];
 
+    if (roleScreen === "permission") {
+        return (
+            <RolePermissionTabContent
+                role={selectedRole}
+                onBack={() => setRoleScreen("list")}
+            />
 
+        );
+    }
 
     return (
         <div className="h-full">
@@ -122,7 +145,11 @@ const RoleTabContent = () => {
                             total: data?.total || 0,
                             onChange: (p) => setPage(p),
                         }}
-                        scroll={{ x: "max-content" }}
+                        onRow={() => ({
+                            style: { cursor: "pointer" },
+                        })}
+                        scroll={{ x: "100%" }}
+                        tableLayout="fixed"
                     />
                 </div>
 
@@ -134,7 +161,7 @@ const RoleTabContent = () => {
 
             {openEdit && (
                 <RoleModal open={openEdit} setOpen={setOpenEdit} mode="edit" role={selectedUser} />
-            )} 
+            )}
 
         </div>
     );

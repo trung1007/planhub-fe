@@ -28,7 +28,7 @@ export default function SideBar() {
     return (
         <div
             className={clsx(
-                "h-screen bg-third border-r shadow-sm transition-all duration-400",
+                "h-full bg-third border-r shadow-sm transition-all duration-400",
                 collapsed ? "w-[70px]" : "w-[220px]"
             )}
         >

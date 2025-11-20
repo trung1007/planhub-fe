@@ -12,36 +12,42 @@ const settingItems = [
     { key: "user", label: "User", icon: <FaUsers /> },
 ];
 
-const tabItems = [
-    {
-        key: "project",
-        label: null,
-        children: (
-            <>
-                <h3 className="text-xl font-semibold mb-4 border-b p-3">Project Settings</h3>
-                <p>Nội dung tab Project…</p>
-            </>
-        ),
-    },
-    {
-        key: "role",
-        label: null,
-        children: <div className="w-full"><RoleTabContent /></div>,
-    },
-    {
-        key: "user",
-        label: null,
-        children: <div className="w-full"><UserTabContent /></div>,
-    },
-];
 
 const SettingsPage = () => {
     const [activeKey, setActiveKey] = useState("project");
+    const [roleScreen, setRoleScreen] = useState<"list" | "permission">("list");
+    const [selectedRole, setSelectedRole] = useState<any>(null);
+    const tabItems = [
+        {
+            key: "project",
+            label: null,
+            children: (
+                <>
+                    <h3 className="text-xl font-semibold mb-4 border-b p-3">Project Settings</h3>
+                    <p>Nội dung tab Project…</p>
+                </>
+            ),
+        },
+        {
+            key: "role",
+            label: null,
+            children: <div className="w-full"> <RoleTabContent
+                roleScreen={roleScreen}
+                setRoleScreen={setRoleScreen}
+                setSelectedRole={setSelectedRole}
+                selectedRole={selectedRole}
+            /></div>,
+        },
+        {
+            key: "user",
+            label: null,
+            children: <div className="w-full"><UserTabContent /></div>,
+        },
+    ];
 
     return (
         <div className="flex gap-6 h-full w-full">
 
-            {/* SIDEBAR 30% */}
             <div className="w-[20%] bg-white">
                 <h2 className="text-xl font-semibold mb-4 border-b p-3">Settings</h2>
 
@@ -63,14 +69,13 @@ const SettingsPage = () => {
                 </div>
             </div>
 
-            {/* CONTENT 70% */}
-            <div className="w-[80%] bg-white">
+            <div className="min-w-[80%] w-[80%] h-full flex flex-col bg-white">
                 <Tabs
                     activeKey={activeKey}
                     onChange={setActiveKey}
                     items={tabItems}
-                    className="w-full"
-                    rootClassName="w-full tabs-full"
+                    className="flex-1"
+                    rootClassName="h-full"
                     tabBarStyle={{ display: "none" }}
                 />
             </div>
