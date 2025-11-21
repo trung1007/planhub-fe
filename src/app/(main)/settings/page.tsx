@@ -46,7 +46,7 @@ const SettingsPage = () => {
     ];
 
     return (
-        <div className="flex gap-6 h-full w-full">
+        <div className="flex gap-6 h-full w-full min-h-fit ">
 
             <div className="w-[20%] bg-white">
                 <h2 className="text-xl font-semibold mb-4 border-b p-3">Settings</h2>

@@ -7,4 +7,17 @@ export const ActionRoleSchema = z.object({
   actionUserId: z.number().nullable(),
 });
 
+export const CreateRolePermissionSchema = z.object({
+  role_id: z.number().refine((v) => v !== undefined && v !== null, {
+    message: "role_id is required",
+  }),
+
+  permissionIds: z
+    .array(z.number())
+    .min(1, "At least one permission must be provided"),
+});
+
 export type ActionRoleInput = z.infer<typeof ActionRoleSchema>;
+export type CreateRolePermissionInput = z.infer<
+  typeof CreateRolePermissionSchema
+>;

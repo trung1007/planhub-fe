@@ -26,7 +26,7 @@ const MainFrame = ({ children }: MainFrameProps) => {
         </div>
     );
     return (
-        <div className="px-6 py-3 flex-1 w-full h-full bg-background flex flex-col ">
+        <div className="px-6 py-3 flex-1 w-full h-full min-h-0 bg-background flex flex-col ">
             <BreadCrumb
                 items={[
                     { label: "Home", href: "/" },

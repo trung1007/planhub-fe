@@ -5,6 +5,7 @@ import {
   getAllPermissions,
   getAllPermissionsIds,
   getAllRole,
+  getDetailRole,
 } from "@/services/role.service";
 import {
   keepPreviousData,
@@ -44,6 +45,15 @@ export const useAllPermissionIds = () => {
     staleTime: 5 * 60 * 1000, // cache 5 phút
   });
 };
+
+export const useGetDetailRole = (id: number) => {
+  return useQuery({
+    queryKey: ["roleDetail", id],
+    queryFn: () => getDetailRole(id),
+    enabled: !!id,
+  });
+};
+
 export const useAddRole = () => {
   const queryClient = useQueryClient();
 

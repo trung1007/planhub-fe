@@ -51,7 +51,7 @@ const Header = () => {
 
     if (pathname === "/login" || pathname === '/forgot-password' || pathname === '/register') return null;
     return (
-        <header className="w-full h-12 bg-primary flex items-center justify-between px-4">
+        <header className="w-full h-12 min-h-12 bg-primary flex items-center justify-between px-4">
             {/* Logo */}
             <div className="flex items-center gap-2 cursor-pointer " onClick={() => { router.push("/") }}>
                 <span className="text-white text-lg font-semibold">PlanHub</span>

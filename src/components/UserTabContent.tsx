@@ -9,7 +9,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 
 const UserTabContent = () => {
   const [page, setPage] = useState(1);
-  const limit = 6;
+  const limit = 10;
 
   const { data, isLoading } = useAllUser(page, limit);
   const [openAdd, setOpenAdd] = useState(false);

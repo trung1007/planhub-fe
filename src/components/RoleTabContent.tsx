@@ -9,7 +9,6 @@ import { useAllRole, useDeleteRole } from "@/hooks/useRole";
 import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 import RolePermissionTabContent from "./RolePermissionTabContent";
-
 const RoleTabContent = ({ roleScreen, setRoleScreen, selectedRole, setSelectedRole }: any) => {
     const [page, setPage] = useState(1);
     const limit = 6;
@@ -155,9 +154,6 @@ const RoleTabContent = ({ roleScreen, setRoleScreen, selectedRole, setSelectedRo
 
             </div>
             {openAdd && <RoleModal open={openAdd} setOpen={setOpenAdd} mode="add" />}
-            {/* {openEdit && (
-                <EditUserModal open={openEdit} setOpen={setOpenEdit} user={selectedUser} />
-            )} */}
 
             {openEdit && (
                 <RoleModal open={openEdit} setOpen={setOpenEdit} mode="edit" role={selectedUser} />

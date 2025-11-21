@@ -24,15 +24,14 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Providers>
-          <Header />
-          <div className="flex h-full">
-            <SideBar />
-
-            {/* Content */}
-            <MainFrame>
-              {children}
-            </MainFrame>
-            {/* <main className="flex-1 p-6">{children}</main> */}
+          <div className="h-full flex flex-col">
+            <Header />
+            <div className="flex-1 flex h-fit ">
+              <SideBar />
+              <MainFrame>
+                {children}
+              </MainFrame>
+            </div>
           </div>
         </Providers>
       </body>

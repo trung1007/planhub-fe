@@ -17,6 +17,11 @@ export const getAllPermissions = async (
   return response.data;
 };
 
+export const getDetailRole = async (id:number) => {
+  const response = await api.get(`/user-service/roles/${id}`);
+  return response.data;
+};
+
 export const getAllPermissionsIds = async () => {
   const response = await api.get(`/user-service/permissions/all-ids`);
   return response.data;

@@ -28,9 +28,10 @@ export default function SideBar() {
     return (
         <div
             className={clsx(
-                "h-full bg-third border-r shadow-sm transition-all duration-400",
+                "h-screen bg-third border-r shadow-sm transition-all duration-400  flex flex-col",
                 collapsed ? "w-[70px]" : "w-[220px]"
             )}
+            style={{height:"100%"}}
         >
             {/* Header */}
             <div className="flex items-center justify-center p-4 border-b border-b-gray-700">
@@ -43,7 +44,7 @@ export default function SideBar() {
             </div>
 
             {/* Menu Items */}
-            <nav >
+            <nav className="flex-1" >
                 {menuItems.map((item, index) => (
                     <Link
                         key={index}
