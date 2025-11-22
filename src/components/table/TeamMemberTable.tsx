@@ -43,7 +43,7 @@ const TeamMemberTable = () => {
             dataIndex: "username",
             key: "username",
             ellipsis: true,
-            width: 200,
+            width: 180,
         },
         {
             title: "Phone Number",
@@ -71,7 +71,7 @@ const TeamMemberTable = () => {
             dataIndex: "joinDate",
             key: "joinDate",
             ellipsis: true,
-            width: 100,
+            width: 120,
             render: (value: string) => (
                 <span className="email-ellipsis">{formatDateDMY(value)}</span>
             ),
