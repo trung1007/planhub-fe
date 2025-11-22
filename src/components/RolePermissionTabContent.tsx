@@ -1,16 +1,6 @@
 "use client";
-
-import { useState, useEffect } from "react";
-import { Checkbox, Table } from "antd";
-import { ColumnsType } from "antd/es/table";
 import { FaArrowLeftLong } from "react-icons/fa6";
-import { toast } from "react-toastify";
 
-import { useAllPermissionIds, useAllPermissions } from "@/hooks/useRole";
-import {
-    useAddRolePermission,
-    useGetAllPermissionsByRole,
-} from "@/hooks/userRolePermission";
 import PermissionTable from "./table/PermissionTable";
 import RolePermissionsTable from "./table/RolePermissionsTable";
 

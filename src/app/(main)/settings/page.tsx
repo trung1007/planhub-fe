@@ -16,7 +16,7 @@ const settingItems = [
 const SettingsPage = () => {
     const [activeKey, setActiveKey] = useState("project");
     const [roleScreen, setRoleScreen] = useState<"list" | "permission">("list");
-    const [selectedRole, setSelectedRole] = useState<any>(null);
+    // const [selectedRole, setSelectedRole] = useState<any>(null);
     const tabItems = [
         {
             key: "project",
@@ -34,8 +34,8 @@ const SettingsPage = () => {
             children: <div className="w-full"> <RoleTabContent
                 roleScreen={roleScreen}
                 setRoleScreen={setRoleScreen}
-                setSelectedRole={setSelectedRole}
-                selectedRole={selectedRole}
+                // setSelectedRole={setSelectedRole}
+                // selectedRole={selectedRole}
             /></div>,
         },
         {

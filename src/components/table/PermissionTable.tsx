@@ -5,6 +5,7 @@ import { Checkbox } from "antd";
 import Table, { ColumnsType } from "antd/es/table";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import ButtonGroup from "../ButtonGroupTable";
 
 const PermissionTable = ({ role }: { role: any }) => {
     const { data: allIdsData, refetch: fetchAllIds } = useAllPermissionIds();
@@ -100,7 +101,7 @@ const PermissionTable = ({ role }: { role: any }) => {
         if (!role) return;
 
         if (permissionToAdd.length === 0) {
-            toast.error("Please select at least one permission.");
+            toast.warning("Please select at least one permission.");
             return;
         }
         addRolePermission(
@@ -125,8 +126,11 @@ const PermissionTable = ({ role }: { role: any }) => {
 
             <ButtonGroup
                 onAdd={handleAddPermissions}
-                nums={permissionToAdd.length}
-                action="add"
+                title={
+                    permissionToAdd.length > 0
+                        ? `Add ${permissionToAdd.length} permissions to this role`
+                        : `Add to this role`
+                }
             />
 
             <Table
@@ -149,48 +153,3 @@ const PermissionTable = ({ role }: { role: any }) => {
 }
 
 export default PermissionTable
-
-const ButtonGroup = ({
-    onAdd,
-    nums,
-    action,
-}: {
-    onAdd: () => void;
-    nums: number;
-    action: string;
-}) => {
-    const titleRemove =
-        nums > 0
-            ? `Remove ${nums} permissions from this role`
-            : "Remove from this role";
-
-    const titleAdd =
-        nums > 0
-            ? `Add ${nums} permissions to this role`
-            : "Add to this role";
-
-    const buttonTitle = action === "remove" ? titleRemove : titleAdd;
-
-    return (
-        <div className="flex py-3 justify-between">
-            <button
-                onClick={onAdd}
-                className="px-3 bg-primary text-white transition font-semibold duration-300 hover:scale-110 cursor-pointer origin-center"
-            >
-                {buttonTitle}
-            </button>
-
-            <div className="flex gap-3">
-                <button className="px-3 bg-primary font-semibold text-white">
-                    Filter
-                </button>
-                <button className="px-3 bg-primary font-semibold text-white">
-                    Sort By
-                </button>
-                <button className="px-3 bg-primary font-semibold text-white">
-                    View
-                </button>
-            </div>
-        </div>
-    );
-};
