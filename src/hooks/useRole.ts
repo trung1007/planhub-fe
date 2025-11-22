@@ -6,6 +6,7 @@ import {
   getAllPermissionsIds,
   getAllRole,
   getDetailRole,
+  getListRole,
 } from "@/services/role.service";
 import {
   keepPreviousData,
@@ -19,6 +20,17 @@ export const useAllRole = (page: number = 1, limit: number = 10) => {
     queryKey: ["roles", page, limit],
     queryFn: () => getAllRole(page, limit),
     placeholderData: keepPreviousData,
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+  });
+};
+
+export const useListRole = () => {
+  return useQuery({
+    queryKey: ["listRoles"],
+    queryFn: () => getListRole(),
     staleTime: 1000 * 60,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,

@@ -24,11 +24,6 @@ const RolesTable = ({setRoleScreen, selectedRole, setSelectedRole }: any) => {
         setOpenEdit(true);
     };
 
-    useEffect(()=>{
-        console.log(selectedRole);
-        
-    },[selectedRole])
-
     const { mutate, isPending: isDeleting } = useDeleteRole()
 
 

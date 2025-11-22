@@ -2,6 +2,7 @@ import {
   addUser,
   changePassword,
   getAllUser,
+  getListUser,
   getUserById,
   updateUser,
 } from "@/services/user.service";
@@ -21,6 +22,18 @@ export const useAllUser = (page: number = 1, limit: number = 10) => {
     queryKey: ["allUsers", page, limit],
     queryFn: () => getAllUser(page, limit),
     placeholderData: keepPreviousData,
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+  });
+};
+
+
+export const useListUser = () => {
+  return useQuery({
+    queryKey: ["listUsers"],
+    queryFn: () => getListUser(),
     staleTime: 1000 * 60,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,

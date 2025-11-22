@@ -37,6 +37,11 @@ export const getAllUser = async (page: number = 1, limit: number = 10) => {
   return response.data;
 };
 
+export const getListUser = async () => {
+  const response = await api.get(`/user-service/users/user-list`);
+  return response.data;
+};
+
 export const getUserById = async (id: number) => {
   const response = await api.get(`/user-service/users/${id}`);
   return response.data;

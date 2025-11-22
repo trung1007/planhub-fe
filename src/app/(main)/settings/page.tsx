@@ -5,6 +5,7 @@ import { Tabs } from "antd";
 import { FaClipboardList, FaUsers, FaUserShield } from "react-icons/fa";
 import UserTabContent from "@/components/UserTabContent";
 import RoleTabContent from "@/components/RoleTabContent";
+import ProjectTabContent from "@/components/ProjectTabContent";
 
 const settingItems = [
     { key: "project", label: "Project", icon: <FaClipboardList /> },
@@ -16,17 +17,11 @@ const settingItems = [
 const SettingsPage = () => {
     const [activeKey, setActiveKey] = useState("project");
     const [roleScreen, setRoleScreen] = useState<"list" | "permission">("list");
-    // const [selectedRole, setSelectedRole] = useState<any>(null);
     const tabItems = [
         {
             key: "project",
             label: null,
-            children: (
-                <>
-                    <h3 className="text-xl font-semibold mb-4 border-b p-3">Project Settings</h3>
-                    <p>Nội dung tab Project…</p>
-                </>
-            ),
+            children: <div className="w-full"><ProjectTabContent /></div>,
         },
         {
             key: "role",
@@ -34,8 +29,6 @@ const SettingsPage = () => {
             children: <div className="w-full"> <RoleTabContent
                 roleScreen={roleScreen}
                 setRoleScreen={setRoleScreen}
-                // setSelectedRole={setSelectedRole}
-                // selectedRole={selectedRole}
             /></div>,
         },
         {
