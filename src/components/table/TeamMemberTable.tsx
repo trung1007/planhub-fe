@@ -3,13 +3,13 @@ import { Button, Popconfirm } from "antd";
 import Table, { ColumnsType } from "antd/es/table";
 import { useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import AddUserModal from "../modal/AddUserModal";
-import EditUserModal from "../modal/EditUserModal";
 import ButtonGroup from "../ButtonGroupTable";
 import { useAllProject, useDeleteProject } from "@/hooks/useProject";
-import ProjectModal from "../modal/ProjectModal";
 import { toast } from "react-toastify";
 import TeamMemberModal from "../modal/TeamMemberModal";
+import { useAllProjectMember } from "@/hooks/useProjectMember";
+
+import { formatDateDMY } from "@/utils/format";
 
 const TeamMemberTable = () => {
     const limit = 10
@@ -23,14 +23,6 @@ const TeamMemberTable = () => {
             fixed: "left" as const,
             render: (_: any, __: any, index: number) => (page - 1) * limit + index + 1,
         },
-
-        {
-            title: "Full Name",
-            dataIndex: "name",
-            key: "name",
-            ellipsis: true,
-            width: 150,
-        },
         {
             title: "Project",
             dataIndex: "projectName",
@@ -39,11 +31,19 @@ const TeamMemberTable = () => {
             width: 150,
         },
         {
+            title: "Full Name",
+            dataIndex: "fullName",
+            key: "fullName",
+            ellipsis: true,
+            width: 150,
+        },
+
+        {
             title: "Username",
             dataIndex: "username",
             key: "username",
             ellipsis: true,
-            width: 130,
+            width: 200,
         },
         {
             title: "Phone Number",
@@ -57,21 +57,14 @@ const TeamMemberTable = () => {
             dataIndex: "email",
             key: "email",
             ellipsis: true,
-            width: 150,
+            width: 200,
         },
         {
             title: "Role",
             dataIndex: "role",
             key: "role",
             ellipsis: true,
-            width: 120,
-        },
-        {
-            title: "Description",
-            dataIndex: "description",
-            key: "description",
-            ellipsis: true,
-            width: 120,
+            width: 80,
         },
         {
             title: "Join Date",
@@ -79,9 +72,9 @@ const TeamMemberTable = () => {
             key: "joinDate",
             ellipsis: true,
             width: 100,
-            // render: (value: string) => (
-            //     <span className="email-ellipsis">{value}</span>
-            // ),
+            render: (value: string) => (
+                <span className="email-ellipsis">{formatDateDMY(value)}</span>
+            ),
         },
 
         {
@@ -107,7 +100,7 @@ const TeamMemberTable = () => {
         },
     ];
 
-    const { data, isLoading } = useAllProject(page, limit);
+    const { data, isLoading } = useAllProjectMember(page, limit);
     const [openAdd, setOpenAdd] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
 

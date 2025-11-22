@@ -29,7 +29,7 @@ export default function SideBar() {
         <div
             className={clsx(
                 "h-screen bg-third border-r shadow-sm transition-all duration-400  flex flex-col",
-                collapsed ? "w-[70px]" : "w-[220px]"
+                collapsed ? "w-[70px]" : "w-[220px] min-w-[220px]"
             )}
             style={{height:"100%"}}
         >

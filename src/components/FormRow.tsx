@@ -1,6 +1,6 @@
 interface FormRowProps {
   label: string;
-  error?: string;
+  error?: any;
   children: React.ReactNode;
 }
 

@@ -12,6 +12,8 @@ import dayjs from "dayjs";
 import { useListUser } from "@/hooks/useUser";
 import { useListProject } from "@/hooks/useProject";
 import { useListRole } from "@/hooks/useRole";
+import { ActionProjectMemberInput, ActionProjectMemberSchema } from "@/schemas/project-member.schema";
+import { useAddProjectMember } from "@/hooks/useProjectMember";
 // đổi theo project của bạn
 
 type Member = {
@@ -41,13 +43,14 @@ const TeamMemberModal: React.FC<ProjectModalProps> = ({
         control,
         reset,
         formState: { errors },
-    } = useForm<Member>({
-        // resolver: zodResolver(null), // bạn sẽ thay schema khi có
+    } = useForm<ActionProjectMemberInput>({
+        resolver: zodResolver(ActionProjectMemberSchema),
         defaultValues: {
             userId: undefined,
             roleId: undefined,
             projectId: undefined,
             joinDate: undefined,
+            createdId: undefined
         },
     });
 
@@ -58,9 +61,12 @@ const TeamMemberModal: React.FC<ProjectModalProps> = ({
     const { data: projectList } = useListProject();
     const { data: roleList } = useListRole();
 
-    // =============================
-    // 2) SET DEFAULT VALUE WHEN EDIT
-    // =============================
+    const currentUser = useAppSelector((state) => state.auth.user);
+
+    const { mutate: mutationAdd, isPending: isAdding } = useAddProjectMember();
+    // const { mutate: mutationEdit, isPending: isEditing } = useEditRole();
+
+
     useEffect(() => {
         if (mode === "edit" && selectedMember) {
             reset({
@@ -68,6 +74,7 @@ const TeamMemberModal: React.FC<ProjectModalProps> = ({
                 roleId: selectedMember.roleId,
                 projectId: selectedMember.projectId,
                 joinDate: selectedMember.joinDate,
+                createdId: currentUser?.id ?? undefined,
             });
         } else {
             reset({
@@ -75,14 +82,44 @@ const TeamMemberModal: React.FC<ProjectModalProps> = ({
                 roleId: undefined,
                 projectId: undefined,
                 joinDate: undefined,
+                createdId: currentUser?.id
             });
         }
     }, [mode, selectedMember]);
 
-    // =============================
-    // HANDLE SAVE
-    // =============================
-    const handleSave = (data: Member) => {
+    const handleAdd = (data: ActionProjectMemberInput) => {
+        const d = new Date(data.joinDate);
+        const day = String(d.getDate()).padStart(2, "0");
+        const month = String(d.getMonth() + 1).padStart(2, "0");
+        const year = d.getFullYear();
+        const formatted = `${day}-${month}-${year}`;
+        if (currentUser) {
+            const payload = {
+                ...data,
+                joinDate: formatted,
+                createdId: currentUser.id
+            }
+
+            mutationAdd(payload, {
+                onSuccess: () => {
+                    toast.success("Member add successfully!");
+                    setOpen(false);
+                    reset();
+                },
+                onError: (err: any) => {
+                    const message =
+                        err?.response?.data?.message ||
+                        err?.message ||
+                        "Failed to add member";
+
+                    toast.error(message);
+                },
+            });
+        }
+
+    };
+
+    const handleEdit = (data: ActionProjectMemberInput) => {
         const d = new Date(data.joinDate);
         const day = String(d.getDate()).padStart(2, "0");
         const month = String(d.getMonth() + 1).padStart(2, "0");
@@ -95,6 +132,16 @@ const TeamMemberModal: React.FC<ProjectModalProps> = ({
             joinDate: formatted,
         });
     };
+
+    const handleSave = (data: ActionProjectMemberInput) => {
+        console.log(mode);
+
+        if (mode === 'add') {
+            return handleAdd(data);
+        } else {
+            return handleEdit(data);
+        }
+    }
 
     const title = mode === "add" ? "Add Member" : "Edit Member";
 
@@ -180,7 +227,7 @@ const TeamMemberModal: React.FC<ProjectModalProps> = ({
                                 {...field}
                                 value={field.value ? dayjs(field.value) : null}
                                 onChange={(value) => field.onChange(value?.toDate())}
-                                format="DD-MM-YYYY" 
+                                format="DD-MM-YYYY"
                                 className="w-full"
                             />
                         )}
