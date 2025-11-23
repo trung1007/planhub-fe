@@ -4,10 +4,9 @@ import Table, { ColumnsType } from "antd/es/table";
 import { useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import ButtonGroup from "../ButtonGroupTable";
-import { useAllProject, useDeleteProject } from "@/hooks/useProject";
 import { toast } from "react-toastify";
 import TeamMemberModal from "../modal/TeamMemberModal";
-import { useAllProjectMember } from "@/hooks/useProjectMember";
+import { useAllProjectMember, useDeleteProjectMember } from "@/hooks/useProjectMember";
 
 import { formatDateDMY } from "@/utils/format";
 
@@ -88,7 +87,7 @@ const TeamMemberTable = () => {
                         <FaEdit />
                     </Button>
                     <Popconfirm
-                        title="Delete this project?"
+                        title="Delete this member?"
                         onConfirm={() => handleDelete(record)}
                         okText="Yes"
                         cancelText="No"
@@ -105,7 +104,7 @@ const TeamMemberTable = () => {
     const [openEdit, setOpenEdit] = useState(false);
 
     const [selectedMember, setSelectedMember] = useState()
-    const { mutate, isPending: isDeleting } = useDeleteProject()
+    const { mutate, isPending: isDeleting } = useDeleteProjectMember()
 
 
     const handleEdit = (record: any) => {
@@ -116,10 +115,10 @@ const TeamMemberTable = () => {
     const handleDelete = (record: any) => {
         mutate(record.id, {
             onSuccess: () => {
-                toast.success("Delete project successful");
+                toast.success("Delete member successful");
             },
             onError: () => {
-                toast.error("Delete project failed");
+                toast.error("Delete member failed");
             }
         });
     };

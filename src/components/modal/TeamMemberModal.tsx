@@ -13,10 +13,11 @@ import { useListUser } from "@/hooks/useUser";
 import { useListProject } from "@/hooks/useProject";
 import { useListRole } from "@/hooks/useRole";
 import { ActionProjectMemberInput, ActionProjectMemberSchema } from "@/schemas/project-member.schema";
-import { useAddProjectMember } from "@/hooks/useProjectMember";
+import { useAddProjectMember, useEditProjectMember } from "@/hooks/useProjectMember";
 // đổi theo project của bạn
 
 type Member = {
+    id: number;
     userId: number;
     roleId: number;
     projectId: number;
@@ -64,7 +65,7 @@ const TeamMemberModal: React.FC<ProjectModalProps> = ({
     const currentUser = useAppSelector((state) => state.auth.user);
 
     const { mutate: mutationAdd, isPending: isAdding } = useAddProjectMember();
-    // const { mutate: mutationEdit, isPending: isEditing } = useEditRole();
+    const { mutate: mutationEdit, isPending: isEditing } = useEditProjectMember();
 
 
     useEffect(() => {
@@ -73,7 +74,9 @@ const TeamMemberModal: React.FC<ProjectModalProps> = ({
                 userId: selectedMember.userId,
                 roleId: selectedMember.roleId,
                 projectId: selectedMember.projectId,
-                joinDate: selectedMember.joinDate,
+                joinDate: selectedMember.joinDate
+                    ? new Date(selectedMember.joinDate)     // 🟩 FIX HERE
+                    : undefined,
                 createdId: currentUser?.id ?? undefined,
             });
         } else {
@@ -127,10 +130,29 @@ const TeamMemberModal: React.FC<ProjectModalProps> = ({
 
         const formatted = `${day}-${month}-${year}`;
 
-        console.log("FORM DATA:", {
-            ...data,
-            joinDate: formatted,
-        });
+       
+        if (currentUser && selectedMember) {
+            const payload = {
+                ...data,
+                joinDate: formatted,
+                createdId: currentUser.id
+            }
+            mutationEdit({ id: selectedMember.id, data: payload }, {
+                onSuccess: () => {
+                    toast.success("Member edited successfully!");
+                    setOpen(false);
+                    reset();
+                },
+                onError: (err: any) => {
+                    const message =
+                        err?.response?.data?.message ||
+                        err?.message ||
+                        "Failed to edit member";
+
+                    toast.error(message);
+                },
+            });
+        }
     };
 
     const handleSave = (data: ActionProjectMemberInput) => {

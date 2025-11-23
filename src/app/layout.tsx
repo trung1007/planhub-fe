@@ -15,6 +15,18 @@ export const metadata: Metadata = {
   }
 };
 
+const originalWarn = console.warn;
+
+console.warn = (...args) => {
+  if (
+    typeof args[0] === "string" &&
+    args[0].includes("[antd: compatible]")
+  ) {
+    return; // không in cảnh báo
+  }
+  originalWarn(...args);
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
