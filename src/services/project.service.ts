@@ -7,6 +7,7 @@ export const getAllProject = async (page: number = 1, limit: number = 10) => {
   });
   return response.data;
 };
+
 export const getListProject = async () => {
   const response = await api.get(`/core-service/projects/project-list`);
   return response.data;

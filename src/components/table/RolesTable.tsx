@@ -20,6 +20,8 @@ const RolesTable = ({setRoleScreen, selectedRole, setSelectedRole }: any) => {
         setRoleScreen("permission");
     };
     const handleEdit = (record: any) => {
+        console.log(record);
+        
         setSelectedRole(record);
         setOpenEdit(true);
     };
@@ -37,6 +39,11 @@ const RolesTable = ({setRoleScreen, selectedRole, setSelectedRole }: any) => {
             }
         });
     };
+
+    useEffect(()=>{
+        console.log("selectedRole", selectedRole);
+        
+    },[selectedRole])
 
 
     const columns: ColumnsType<any> = [
@@ -137,7 +144,7 @@ const RolesTable = ({setRoleScreen, selectedRole, setSelectedRole }: any) => {
             {openAdd && <RoleModal open={openAdd} setOpen={setOpenAdd} mode="add" />}
 
             {openEdit && (
-                <RoleModal open={openEdit} setOpen={setOpenEdit} mode="edit" role={selectedRole} />
+                <RoleModal open={openEdit} setOpen={setOpenEdit} mode="edit" defaultValues={selectedRole} role={selectedRole} />
             )}
         </div>
     )

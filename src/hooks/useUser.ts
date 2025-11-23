@@ -29,7 +29,6 @@ export const useAllUser = (page: number = 1, limit: number = 10) => {
   });
 };
 
-
 export const useListUser = () => {
   return useQuery({
     queryKey: ["listUsers"],
@@ -47,6 +46,7 @@ export const useAddUser = () => {
     mutationFn: (data: RegisterInput) => addUser(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["allUsers"] });
+      queryClient.invalidateQueries({ queryKey: ["listUsers"] });
     },
   });
 };
@@ -70,9 +70,8 @@ export const useUpdateUser = () => {
       // updatedUser là object User backend trả về
       dispatch(updateUserState(updatedUser));
       if (!pathname.includes("user")) {
-        console.log("fetching");
-        
         queryClient.invalidateQueries({ queryKey: ["allUsers"] });
+        queryClient.invalidateQueries({ queryKey: ["listUsers"] });
       }
     },
   });

@@ -27,7 +27,7 @@ export const useAllProject = (page: number = 1, limit: number = 10) => {
 
 export const useListProject = () => {
   return useQuery({
-    queryKey: ["listProducts"],
+    queryKey: ["listProjects"],
     queryFn: () => getListProject(),
     staleTime: 1000 * 60,
     refetchOnWindowFocus: false,
@@ -43,6 +43,7 @@ export const useAddProject = () => {
     mutationFn: (data: ActionProjectInput) => createProject(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
+      queryClient.invalidateQueries({ queryKey: ["listProjects"] });
     },
   });
 };
@@ -55,6 +56,7 @@ export const useEditProject = () => {
       editProject(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
+      queryClient.invalidateQueries({ queryKey: ["listProjects"] });
     },
   });
 };
@@ -66,6 +68,7 @@ export const useDeleteProject = () => {
     mutationFn: (id: number) => deleteProject(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
+      queryClient.invalidateQueries({ queryKey: ["listProjects"] });
     },
   });
 };

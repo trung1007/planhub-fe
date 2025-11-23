@@ -18,7 +18,7 @@ const RoleTabContent = ({ roleScreen, setRoleScreen }: any) => {
     return (
         <div className="h-full">
             <h3 className="text-xl font-semibold mb-4 border-b p-3">Role & Permission</h3>
-            <RolesTable setRoleScreen={setRoleScreen}  setSelectedRole={setSelectedRole}/>
+            <RolesTable setRoleScreen={setRoleScreen} selectedRole={selectedRole} setSelectedRole={setSelectedRole}/>
         </div>
     );
 };

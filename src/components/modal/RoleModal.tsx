@@ -57,9 +57,9 @@ const RoleModal: React.FC<RoleModalProps> = ({
         });
         if (role) {
             reset({
-                name: role?.name || "",
-                key: role?.key || "",
-                description: role?.description || "",
+                name: defaultValues?.name || "",
+                key: defaultValues?.key || "",
+                description: defaultValues?.description || "",
                 actionUserId: currentUser?.id ?? null,
             });
         }

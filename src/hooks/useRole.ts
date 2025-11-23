@@ -73,6 +73,7 @@ export const useAddRole = () => {
     mutationFn: (data: any) => createRole(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["roles"] });
+      queryClient.invalidateQueries({ queryKey: ["listRoles"] });
     },
   });
 };
@@ -84,6 +85,7 @@ export const useEditRole = () => {
     mutationFn: ({ id, data }: any) => editRole(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["roles"] });
+      queryClient.invalidateQueries({ queryKey: ["listRoles"] });
     },
   });
 };
@@ -95,6 +97,7 @@ export const useDeleteRole = () => {
     mutationFn: (id: number) => deleteRole(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["roles"] });
+      queryClient.invalidateQueries({ queryKey: ["listRoles"] });
     },
   });
 };

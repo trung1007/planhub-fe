@@ -6,7 +6,6 @@ const TeamPage = () => {
             <h3 className="text-xl font-semibold mb-4 border-b p-3">Team member</h3>
             <div className="overflow-x-auto">
                 <TeamMemberTable />
-
             </div>
         </div>
     )
