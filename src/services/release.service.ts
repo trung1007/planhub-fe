@@ -14,7 +14,7 @@ export const getAllRelease = async (page: number = 1, limit: number = 10) => {
 };
 
 export const getListRelease = async () => {
-  const response = await api.get(`/core-service/projects/release-list`);
+  const response = await api.get(`/core-service/releases/release-list`);
   return response.data;
 };
 

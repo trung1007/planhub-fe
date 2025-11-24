@@ -8,6 +8,7 @@ import clsx from "clsx";
 import { FaHome, FaUser, FaCog, FaBars, FaArchive, FaRocket, FaArrowCircleRight, FaArrowCircleLeft } from "react-icons/fa";
 import { MdAnalytics } from "react-icons/md";
 import { usePathname } from "next/navigation";
+import { FaBarsProgress } from "react-icons/fa6";
 
 export interface MenuItem {
     label: string;
@@ -19,6 +20,7 @@ export const menuItems = [
     { label: "Scrum board", icon: <MdAnalytics size={20} />, href: "/scrum-board" },
     { label: "Team", icon: <FaUser size={20} />, href: "/team" },
     { label: "Release", icon: <FaRocket size={20} />, href: "/release" },
+    { label: "Sprint", icon: <FaBarsProgress  size={20} />, href: "/sprint" },
     { label: "Settings", icon: <FaCog size={20} />, href: "/settings" },
 ];
 export default function SideBar() {

@@ -1,14 +1,14 @@
 import { ReleaseStatus } from "@/enums/release.enum";
 import { z } from "zod";
 
-export const ACtionReleaseSchema = z.object({
+export const ACtionSprintSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  version: z.string().min(1, "Version is required"),
-  status: z.enum(ReleaseStatus).optional(),
-  projectId: z
+  key: z.string().min(1, "Key is required"),
+  releaseId: z
     .number()
     .int()
-    .refine((v) => !isNaN(v), "Project is required"),
+    .refine((v) => !isNaN(v), "Release is required"),
+  isActive: z.boolean(),
   startDate: z
     .any()
     .refine((v) => v instanceof Date, "Start date must be a Date"),
@@ -17,4 +17,4 @@ export const ACtionReleaseSchema = z.object({
   description: z.string().optional(),
 });
 
-export type ActionReleaseInput = z.infer<typeof ACtionReleaseSchema>;
+export type ActionSprintInput = z.infer<typeof ACtionSprintSchema>;

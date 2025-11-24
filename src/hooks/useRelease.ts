@@ -37,7 +37,7 @@ export const useAllRelease = (page: number = 1, limit: number = 10) => {
   });
 };
 
-export const useListProject = () => {
+export const useListRelease = () => {
   return useQuery({
     queryKey: ["listReleases"],
     queryFn: () => getListRelease(),

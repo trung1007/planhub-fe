@@ -8,10 +8,11 @@ import { toast } from "react-toastify";
 
 import { formatDateDMY } from "@/utils/format";
 import { useAllRelease, useDeleteRelease } from "@/hooks/useRelease";
-import ReleaseModal from "../modal/ReleaseModal";
 import ReleaseStatusTag from "../ReleaseStatusTag";
+import SprintModal from "../modal/SprintModal";
+import { useDeleteSprint } from "@/hooks/useSprint";
 
-const ReleaseTable = () => {
+const SprintTable = () => {
     const limit = 10
     const [page, setPage] = useState(1);
     const columns: ColumnsType<any> = [
@@ -24,41 +25,49 @@ const ReleaseTable = () => {
             render: (_: any, __: any, index: number) => (page - 1) * limit + index + 1,
         },
         {
-            title: "Project",
-            dataIndex: "projectName",
-            key: "projectName",
-            ellipsis: true,
-            width: 150,
-        },
-        {
-            title: "Release Name",
+            title: "Name",
             dataIndex: "name",
             key: "name",
             ellipsis: true,
             width: 150,
         },
+        {
+            title: "Key",
+            dataIndex: "key",
+            key: "key",
+            ellipsis: true,
+            width: 150,
+        },
 
         {
-            title: "Version",
-            dataIndex: "version",
-            key: "version",
+            title: "Release",
+            dataIndex: "releaseName",
+            key: "releaseName",
             ellipsis: true,
             width: 80,
         },
+        // {
+        //     title: "Status",
+        //     dataIndex: "status",
+        //     key: "status",
+        //     ellipsis: true,
+        //     width: 150,
+        //     render: (value) => <ReleaseStatusTag status={value} />,
+        // },
+        // {
+        //     title: "Description",
+        //     dataIndex: "description",
+        //     key: "description",
+        //     ellipsis: true,
+        //     width: 200,
+        // },
         {
-            title: "Status",
-            dataIndex: "status",
-            key: "status",
+            title: "Is Active",
+            dataIndex: "isActive",
+            key: "isActive",
             ellipsis: true,
             width: 150,
             render: (value) => <ReleaseStatusTag status={value} />,
-        },
-        {
-            title: "Description",
-            dataIndex: "description",
-            key: "description",
-            ellipsis: true,
-            width: 200,
         },
         {
             title: "Start Date",
@@ -109,28 +118,28 @@ const ReleaseTable = () => {
     const [openAdd, setOpenAdd] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
 
-    const [selectedRelease, setSelectedRelease] = useState()
-    const { mutate, isPending: isDeleting } = useDeleteRelease()
+    const [selectedSprint, setSelectedSprint] = useState()
+    const { mutate, isPending: isDeleting } = useDeleteSprint()
 
 
     const handleEdit = (record: any) => {
-        setSelectedRelease(record);
+        setSelectedSprint(record);
         setOpenEdit(true);
     };
 
     const handleDelete = (record: any) => {
         mutate(record.id, {
             onSuccess: () => {
-                toast.success("Delete release successful");
+                toast.success("Delete sprint successful");
             },
             onError: () => {
-                toast.error("Delete release failed");
+                toast.error("Delete sprint failed");
             }
         });
     };
     return (
         <div className="p-3 flex flex-col gap-2">
-            <ButtonGroup onAdd={() => setOpenAdd(true)} title="Add release" />
+            <ButtonGroup onAdd={() => setOpenAdd(true)} title="Add Sprint" />
 
             <Table
                 rowKey="id"
@@ -150,12 +159,12 @@ const ReleaseTable = () => {
                 scroll={{ x: "100%" }}
                 tableLayout="fixed"
             />
-            {openAdd && <ReleaseModal open={openAdd} setOpen={setOpenAdd} mode="add" />}
-            {openEdit && <ReleaseModal open={openEdit} setOpen={setOpenEdit} mode="edit" selectedRelease={selectedRelease} />}
+            {openAdd && <SprintModal open={openAdd} setOpen={setOpenAdd} mode="add" />}
+            {openEdit && <SprintModal open={openEdit} setOpen={setOpenEdit} mode="edit" selectedSprint={selectedSprint} />}
         </div>
     )
 }
 
 
 
-export default ReleaseTable
+export default SprintTable
