@@ -2,7 +2,7 @@
 import { Button, Popconfirm } from "antd";
 import Table, { ColumnsType } from "antd/es/table";
 import { useState } from "react";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit, FaFlag, FaTrash } from "react-icons/fa";
 import ButtonGroup from "../ButtonGroupTable";
 import { toast } from "react-toastify";
 
@@ -10,7 +10,7 @@ import { formatDateDMY } from "@/utils/format";
 import { useAllRelease, useDeleteRelease } from "@/hooks/useRelease";
 import ReleaseStatusTag from "../ReleaseStatusTag";
 import SprintModal from "../modal/SprintModal";
-import { useDeleteSprint } from "@/hooks/useSprint";
+import { useAllSprint, useDeleteSprint } from "@/hooks/useSprint";
 
 const SprintTable = () => {
     const limit = 10
@@ -24,6 +24,15 @@ const SprintTable = () => {
             fixed: "left" as const,
             render: (_: any, __: any, index: number) => (page - 1) * limit + index + 1,
         },
+
+        {
+            title: "Release Name",
+            dataIndex: "releaseName",
+            key: "releaseName",
+            ellipsis: true,
+            width: 150,
+        },
+
         {
             title: "Name",
             dataIndex: "name",
@@ -36,39 +45,11 @@ const SprintTable = () => {
             dataIndex: "key",
             key: "key",
             ellipsis: true,
-            width: 150,
-        },
-
-        {
-            title: "Release",
-            dataIndex: "releaseName",
-            key: "releaseName",
-            ellipsis: true,
             width: 80,
         },
-        // {
-        //     title: "Status",
-        //     dataIndex: "status",
-        //     key: "status",
-        //     ellipsis: true,
-        //     width: 150,
-        //     render: (value) => <ReleaseStatusTag status={value} />,
-        // },
-        // {
-        //     title: "Description",
-        //     dataIndex: "description",
-        //     key: "description",
-        //     ellipsis: true,
-        //     width: 200,
-        // },
-        {
-            title: "Is Active",
-            dataIndex: "isActive",
-            key: "isActive",
-            ellipsis: true,
-            width: 150,
-            render: (value) => <ReleaseStatusTag status={value} />,
-        },
+
+
+
         {
             title: "Start Date",
             dataIndex: "startDate",
@@ -90,7 +71,16 @@ const SprintTable = () => {
                 <span className="email-ellipsis">{formatDateDMY(value)}</span>
             ),
         },
-
+        {
+            title: "Is Active",
+            dataIndex: "isActive",
+            key: "isActive",
+            ellipsis: true,
+            width: 60,
+            align: "center",
+            render: (value: boolean) =>
+                value ? <FaFlag className="text-green-500" /> : null,
+        },
         {
             title: "Action",
             key: "action",
@@ -102,7 +92,7 @@ const SprintTable = () => {
                         <FaEdit />
                     </Button>
                     <Popconfirm
-                        title="Delete this release?"
+                        title="Delete this sprint?"
                         onConfirm={() => handleDelete(record)}
                         okText="Yes"
                         cancelText="No"
@@ -114,7 +104,7 @@ const SprintTable = () => {
         },
     ];
 
-    const { data, isLoading } = useAllRelease(page, limit);
+    const { data, isLoading } = useAllSprint(page, limit);
     const [openAdd, setOpenAdd] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Modal, Select, DatePicker, Input } from "antd";
+import { Modal, Select, DatePicker, Input, Checkbox } from "antd";
 import { Controller, useForm } from "react-hook-form";
 import FormRow from "../FormRow";
 import { useEffect } from "react";
@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import { ActionSprintInput, ACtionSprintSchema } from "@/schemas/sprint-schema";
 import { useAddSprint, useEditSprint } from "@/hooks/useSprint";
 import { useListRelease } from "@/hooks/useRelease";
+import { formatDateDMY } from "@/utils/format";
 // đổi theo project của bạn
 
 type Sprint = {
@@ -50,7 +51,7 @@ const SprintModal: React.FC<SprintModalProps> = ({
             name: undefined,
             key: undefined,
             releaseId: undefined,
-            isActive: undefined,
+            isActive: false,
             startDate: undefined,
             endDate: undefined,
             createdId: undefined
@@ -88,71 +89,70 @@ const SprintModal: React.FC<SprintModalProps> = ({
                 name: undefined,
                 key: undefined,
                 releaseId: undefined,
-                isActive: undefined,
+                isActive: false,
                 startDate: undefined,
                 endDate: undefined,
-                createdId: undefined,
+                createdId: currentUser?.id,
             });
         }
     }, [mode, selectedSprint]);
 
     const handleAdd = (data: ActionSprintInput) => {
-        // if (currentUser) {
-        //     const payload = {
-        //         ...data,
-        //         startDate: formatDateDMY(data.startDate),
-        //         endDate: formatDateDMY(data.endDate),
-        //         createdId: currentUser.id
-        //     }
+        if (currentUser) {
+            const payload = {
+                ...data,
+                startDate: formatDateDMY(data.startDate),
+                endDate: formatDateDMY(data.endDate),
+                createdId: currentUser.id
+            }
 
-        //     mutationAdd(payload, {
-        //         onSuccess: () => {
-        //             toast.success("Release add successfully!");
-        //             setOpen(false);
-        //             reset();
-        //         },
-        //         onError: (err: any) => {
-        //             const message =
-        //                 err?.response?.data?.message ||
-        //                 err?.message ||
-        //                 "Failed to add release";
+            mutationAdd(payload, {
+                onSuccess: () => {
+                    toast.success("Srpint add successfully!");
+                    setOpen(false);
+                    reset();
+                },
+                onError: (err: any) => {
+                    const message =
+                        err?.response?.data?.message ||
+                        err?.message ||
+                        "Failed to add sprint";
 
-        //             toast.error(message);
-        //         },
-        //     });
-        // }
+                    toast.error(message);
+                },
+            });
+        }
 
     };
 
     const handleEdit = (data: ActionSprintInput) => {
-        // if (currentUser && selectedSprint) {
-        //     const payload = {
-        //         ...data,
-        //         startDate: formatDateDMY(data.startDate),
-        //         endDate: formatDateDMY(data.endDate),
-        //         createdId: currentUser.id
-        //     }
-        //     mutationEdit({ id: selectedSprint.id, data: payload }, {
-        //         onSuccess: () => {
-        //             toast.success("Release edited successfully!");
-        //             setOpen(false);
-        //             reset();
-        //         },
-        //         onError: (err: any) => {
-        //             const message =
-        //                 err?.response?.data?.message ||
-        //                 err?.message ||
-        //                 "Failed to edit release";
+        if (currentUser && selectedSprint) {
+            const payload = {
+                ...data,
+                startDate: formatDateDMY(data.startDate),
+                endDate: formatDateDMY(data.endDate),
+                createdId: currentUser.id
+            }
+            mutationEdit({ id: selectedSprint.id, data: payload }, {
+                onSuccess: () => {
+                    toast.success("Srpint edited successfully!");
+                    setOpen(false);
+                    reset();
+                },
+                onError: (err: any) => {
+                    const message =
+                        err?.response?.data?.message ||
+                        err?.message ||
+                        "Failed to edit sprint";
 
-        //             toast.error(message);
-        //         },
-        //     });
-        // }
+                    toast.error(message);
+                },
+            });
+        }
     };
 
     const handleSave = (data: ActionSprintInput) => {
         console.log(data);
-
 
         if (mode === 'add') {
             return handleAdd(data);
@@ -207,6 +207,21 @@ const SprintModal: React.FC<SprintModalProps> = ({
                                     value: p.id,
                                 }))}
                             />
+                        )}
+                    />
+                </FormRow>
+
+                <FormRow label="Active" error={errors.isActive?.message}>
+                    <Controller
+                        name="isActive"
+                        control={control}
+                        render={({ field }) => (
+                            <Checkbox
+                                checked={field.value ?? false}
+                                onChange={(e) => field.onChange(e.target.checked)}
+                            >
+                                Is Active
+                            </Checkbox>
                         )}
                     />
                 </FormRow>
