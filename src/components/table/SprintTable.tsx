@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 
 import { formatDateDMY } from "@/utils/format";
 import { useAllRelease, useDeleteRelease } from "@/hooks/useRelease";
-import ReleaseStatusTag from "../ReleaseStatusTag";
+import ReleaseStatusTag from "../tag/ReleaseStatusTag";
 import SprintModal from "../modal/SprintModal";
 import { useAllSprint, useDeleteSprint } from "@/hooks/useSprint";
 

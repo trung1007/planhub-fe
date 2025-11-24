@@ -4,6 +4,7 @@ import {
   deleteSprint,
   editSprint,
   getAllSprint,
+  getListActiveSprint,
   getListSprint,
 } from "@/services/sprint.service";
 import {
@@ -21,6 +22,7 @@ export const useAddSprint = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sprints"] });
       queryClient.invalidateQueries({ queryKey: ["listSprints"] });
+      queryClient.invalidateQueries({ queryKey: ["activeSprints"] });
     },
   });
 };
@@ -48,6 +50,18 @@ export const useListSprint = () => {
   });
 };
 
+export const useActiveSprint = () => {
+  return useQuery({
+    queryKey: ["activeSprints"],
+    queryFn: () => getListActiveSprint(),
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+  });
+};
+
+
 export const useEditSprint = () => {
   const queryClient = useQueryClient();
 
@@ -57,6 +71,7 @@ export const useEditSprint = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sprints"] });
       queryClient.invalidateQueries({ queryKey: ["listSprints"] });
+      queryClient.invalidateQueries({ queryKey: ["activeSprints"] });
     },
   });
 };
@@ -69,6 +84,7 @@ export const useDeleteSprint = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sprints"] });
       queryClient.invalidateQueries({ queryKey: ["listSprints"] });
+      queryClient.invalidateQueries({ queryKey: ["activeSprints"] });
     },
   });
 };

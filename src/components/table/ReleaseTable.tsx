@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { formatDateDMY } from "@/utils/format";
 import { useAllRelease, useDeleteRelease } from "@/hooks/useRelease";
 import ReleaseModal from "../modal/ReleaseModal";
-import ReleaseStatusTag from "../ReleaseStatusTag";
+import ReleaseStatusTag from "../tag/ReleaseStatusTag";
 
 const ReleaseTable = () => {
     const limit = 10

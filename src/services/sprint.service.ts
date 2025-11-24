@@ -1,4 +1,5 @@
 import api from "@/lib/axios";
+import { AssignIssueToSprintInput } from "@/schemas/issue.schema";
 import { ActionSprintInput } from "@/schemas/sprint-schema";
 
 export const createSprint = async (data: ActionSprintInput) => {
@@ -14,9 +15,16 @@ export const getAllSprint = async (page: number = 1, limit: number = 10) => {
 };
 
 export const getListSprint = async () => {
-  const response = await api.get(`/core-service/sprints/srpint-list`);
+  const response = await api.get(`/core-service/sprints/sprint-list`);
   return response.data;
 };
+
+export const getListActiveSprint = async () => {
+  const response = await api.get(`/core-service/sprints/active-sprints`);
+  return response.data;
+};
+
+
 
 export const editSprint = async (id:number,data: ActionSprintInput) => {
   const response = await api.patch(`/core-service/sprints/${id}`, data);

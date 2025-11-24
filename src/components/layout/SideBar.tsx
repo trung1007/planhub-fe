@@ -16,7 +16,7 @@ export interface MenuItem {
     icon: React.ReactNode;
 }
 export const menuItems = [
-    { label: "Backlog", icon: <FaArchive size={20} />, href: "/" },
+    { label: "Issue", icon: <FaArchive size={20} />, href: "/" },
     { label: "Scrum board", icon: <MdAnalytics size={20} />, href: "/scrum-board" },
     { label: "Team", icon: <FaUser size={20} />, href: "/team" },
     { label: "Release", icon: <FaRocket size={20} />, href: "/release" },
