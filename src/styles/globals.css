@@ -16,7 +16,8 @@
 }
 
 html,
-body, #__next {
+body,
+#__next {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -61,4 +62,43 @@ body, #__next {
   overflow: hidden;
   text-overflow: ellipsis;
   vertical-align: middle;
+}
+
+
+.smooth-toggle {
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.25s ease;
+}
+
+.smooth-toggle-enter {
+  max-height: 0;
+  opacity: 0;
+}
+
+.smooth-toggle-open {
+  max-height: 800px;
+  /* đủ lớn để chứa nội dung */
+  opacity: 1;
+}
+
+/* Style the custom button */
+.custom-file-btn {
+  background-color: #1d72b8;
+  /* Blue color */
+  color: white;
+  border-radius: 5px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* Hide the default file input */
+.hidden-file-input {
+  display: none;
+  /* Hide the default input */
+}
+
+/* Optional: Style the text of the input if it's visible (e.g., in a different custom input scenario) */
+input[type="file"]::-webkit-file-upload-button {
+  visibility: hidden;
 }

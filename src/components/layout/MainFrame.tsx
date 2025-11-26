@@ -14,12 +14,20 @@ const MainFrame = ({ children }: MainFrameProps) => {
     const [activeMenu, setActiveMenu] = useState<MenuItem | null>(null);
 
     useEffect(() => {
+        let path = pathname;
+
+        // Trường hợp đặc biệt: "/" xem như "/issue"
+        if (pathname === "/") {
+            path = "/issue";
+        }
+
         const active = menuItems.find(item =>
-            item.href && item.href.includes(pathname)
+            path === item.href || path.startsWith(item.href + "/")
         ) || null;
 
         setActiveMenu(active);
     }, [pathname]);
+
     if (pathname === "/login" || pathname === '/forgot-password' || pathname === '/register') return (
         <div className="flex-1 w-full h-full">
             {children}

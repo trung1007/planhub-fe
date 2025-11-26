@@ -35,8 +35,7 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    console.log("originalReq", originalRequest._retry);
-
+  
     if (!error.response) return Promise.reject(error);
 
     // Khi bị 401

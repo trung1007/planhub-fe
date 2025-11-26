@@ -2,7 +2,7 @@
 import { useAllRolePermissionIds, useDeleteRolePermission, useGetAllPermissionsByRole } from "@/hooks/userRolePermission";
 import { Checkbox } from "antd";
 import Table, { ColumnsType } from "antd/es/table";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import ButtonGroup from "../ButtonGroupTable";
 

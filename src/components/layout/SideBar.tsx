@@ -16,11 +16,12 @@ export interface MenuItem {
     icon: React.ReactNode;
 }
 export const menuItems = [
-    { label: "Issue", icon: <FaArchive size={20} />, href: "/" },
+    // { label: "Issue", icon: <FaArchive size={20} />, href: "/" },
+    { label: "Issue", icon: <FaArchive size={20} />, href: "/issue" },
     { label: "Scrum board", icon: <MdAnalytics size={20} />, href: "/scrum-board" },
     { label: "Team", icon: <FaUser size={20} />, href: "/team" },
     { label: "Release", icon: <FaRocket size={20} />, href: "/release" },
-    { label: "Sprint", icon: <FaBarsProgress  size={20} />, href: "/sprint" },
+    { label: "Sprint", icon: <FaBarsProgress size={20} />, href: "/sprint" },
     { label: "Settings", icon: <FaCog size={20} />, href: "/settings" },
 ];
 export default function SideBar() {
@@ -33,7 +34,7 @@ export default function SideBar() {
                 "h-screen bg-third border-r shadow-sm transition-all duration-400  flex flex-col",
                 collapsed ? "w-[70px]" : "w-[220px] min-w-[220px]"
             )}
-            style={{height:"100%"}}
+            style={{ height: "100%" }}
         >
             {/* Header */}
             <div className="flex items-center justify-center p-4 border-b border-b-gray-700">
@@ -53,7 +54,10 @@ export default function SideBar() {
                         href={item.href}
                         className={clsx(
                             "flex items-center gap-3 px-4 py-3 text-white hover:bg-primary transition-all duration-400",
-                            collapsed && "justify-center",  pathname === item.href && "bg-primary font-semibold"
+                            collapsed && "justify-center",
+                            (item.href === "/" && pathname.startsWith("/issue")) || pathname === item.href
+                                ? "bg-primary font-semibold"
+                                : ""
                         )}
                     >
                         {item.icon}

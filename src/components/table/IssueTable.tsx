@@ -173,7 +173,7 @@ const IssueTable = () => {
             fixed: "right" as const,
             render: (_: any, record: any) => (
                 <div className="flex gap-1">
-                    <Button size="small" type="default" onClick={() => { }}>
+                    <Button size="small" type="default" onClick={() => goToView(record)}>
                         <FaEye />
                     </Button>
                     <Button size="small" type="primary" onClick={() => handleEdit(record)}>
@@ -198,6 +198,10 @@ const IssueTable = () => {
 
     const [selectedIssue, setSelectedIssue] = useState()
     const { mutate, isPending: isDeleting } = useDeleteIssue()
+
+    const goToView = (record: any) => {
+        router.push(`/issue/${record.id}`)
+    }
 
 
     const handleEdit = (record: any) => {

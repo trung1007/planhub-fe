@@ -4,7 +4,7 @@ import Providers from "@/providers";
 import Header from "@/components/layout/Header";
 import SideBar from "@/components/layout/SideBar";
 import MainFrame from "@/components/layout/MainFrame";
-
+import '@ant-design/compatible';
 
 
 export const metadata: Metadata = {
