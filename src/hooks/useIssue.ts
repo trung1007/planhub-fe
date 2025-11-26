@@ -9,6 +9,7 @@ import {
   editIssue,
   getAllIssue,
   getAllIssueIds,
+  getIssueById,
 } from "@/services/issue.service";
 
 import {
@@ -58,6 +59,14 @@ export const useAssignIssueToSprit = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["issues"] });
     },
+  });
+};
+
+export const useGetDetailIssue = (id: number) => {
+  return useQuery({
+    queryKey: ["issueDetail", id],
+    queryFn: () => getIssueById(id),
+    enabled: !!id,
   });
 };
 

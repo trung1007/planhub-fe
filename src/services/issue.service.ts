@@ -22,6 +22,10 @@ export const assignIssueToSprint = async (data: AssignIssueToSprintInput) => {
   );
   return response.data;
 };
+export const getIssueById = async (id: number) => {
+  const response = await api.get(`/core-service/issues/${id}`);
+  return response.data;
+};
 
 export const editIssue = async (id: number, data: IssueFormValues) => {
   const response = await api.patch(`/core-service/issues/${id}`, data);
@@ -32,6 +36,8 @@ export const deleteIssue = async (id: number) => {
   const response = await api.delete(`/core-service/issues/${id}`);
   return response.data;
 };
+
+
 
 export const getAllIssueIds = async () => {
   const response = await api.get(`/core-service/issues/all-ids`);
