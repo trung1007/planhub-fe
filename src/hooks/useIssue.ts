@@ -10,6 +10,8 @@ import {
   getAllIssue,
   getAllIssueIds,
   getIssueById,
+  getListIssue,
+  getSubtasksByIssueId,
 } from "@/services/issue.service";
 
 import {
@@ -40,6 +42,18 @@ export const useAllIssuesIds = () => {
   });
 };
 
+export const useListIssue = (enabled: boolean = true) => {
+  return useQuery({
+    queryKey: ["listIssues"],
+    queryFn: () => getListIssue(),
+    enabled,
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+  });
+};
+
 export const useAddIssue = () => {
   const queryClient = useQueryClient();
 
@@ -47,6 +61,7 @@ export const useAddIssue = () => {
     mutationFn: (data: IssueFormValues) => createIssue(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["issues"] });
+      queryClient.invalidateQueries({ queryKey: ["subtasks"] });
     },
   });
 };
@@ -58,6 +73,7 @@ export const useAssignIssueToSprit = () => {
     mutationFn: (data: AssignIssueToSprintInput) => assignIssueToSprint(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["issues"] });
+      queryClient.invalidateQueries({ queryKey: ["subtasks"] });
     },
   });
 };
@@ -78,6 +94,7 @@ export const useEditIssue = () => {
       editIssue(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["issues"] });
+      queryClient.invalidateQueries({ queryKey: ["subtasks"] });
     },
   });
 };
@@ -89,6 +106,23 @@ export const useDeleteIssue = () => {
     mutationFn: (id: number) => deleteIssue(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["issues"] });
+      queryClient.invalidateQueries({ queryKey: ["subtasks"] });
     },
+  });
+};
+
+export const useAllSubtask = (
+  parentId: number,
+  page: number = 1,
+  limit: number = 10
+) => {
+  return useQuery({
+    queryKey: ["subtasks", parentId, page, limit],
+    queryFn: () => getSubtasksByIssueId(parentId, page, limit),
+    placeholderData: keepPreviousData,
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
   });
 };

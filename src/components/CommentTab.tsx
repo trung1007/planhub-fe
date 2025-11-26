@@ -11,10 +11,6 @@ import CommentElement from "./CommentElement";
 const CommentTab = ({ issueId }: { issueId: number }) => {
 
     const [content, setContent] = useState("");
-
-    const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
-    const [editingContent, setEditingContent] = useState("");
-
     const {
         data: comments = [],
         isLoading,

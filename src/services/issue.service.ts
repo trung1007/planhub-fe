@@ -37,9 +37,24 @@ export const deleteIssue = async (id: number) => {
   return response.data;
 };
 
-
+export const getSubtasksByIssueId = async (
+  parentId: number,
+  page: number = 1,
+  limit: number = 10
+) => {
+  const response = await api.get(`/core-service/issues/${parentId}/subtasks`, {
+    params: { page, limit },
+  });
+  return response.data;
+};
 
 export const getAllIssueIds = async () => {
   const response = await api.get(`/core-service/issues/all-ids`);
   return response.data;
 };
+
+export const getListIssue = async () => {
+  const response = await api.get(`/core-service/issues/issue-list`);
+  return response.data;
+};
+

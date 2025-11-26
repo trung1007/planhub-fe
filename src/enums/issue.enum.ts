@@ -30,4 +30,5 @@ export enum IssueType {
   STORY = "story",
   FEATURE = "feature",
   IMPROVEMENT = "improvement",
+  SUBTASK = 'subtask'
 }

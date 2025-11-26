@@ -13,6 +13,8 @@ export const IssueSchema = z.object({
 
   type: z.enum(IssueType),
 
+  parentIssueId: z.number().nullable().optional(),
+
   name: z.string().min(1, "Name is required"),
 
   summary: z.string().nullable().optional(),
@@ -37,9 +39,7 @@ export const AssignIssueToSprint = z.object({
     message: "sprintId is required",
   }),
 
-  issueIds: z
-    .array(z.number())
-    .min(1, "At least one issue must be provided"),
+  issueIds: z.array(z.number()).min(1, "At least one issue must be provided"),
 });
 
 export type IssueFormValues = z.infer<typeof IssueSchema>;

@@ -15,6 +15,7 @@ import { IssuePriorityTag } from "@/components/tag/IssuePriorityTag";
 import { IssueTagList } from "@/components/tag/IssueTagList";
 import { IssueStatusTag } from "@/components/tag/IssueStatusTag";
 import CommentActivity from "@/components/CommentActivity";
+import SubTaskIssue from "@/components/SubtaskIssue";
 
 
 
@@ -111,28 +112,10 @@ const DetailIssue = () => {
             {/* Attachments */}
             <AttachmentUpload issueId={issueIdNumber} />
             {/* Sub-task */}
-            <div className="mb-6">
-                <div
-                    className="flex justify-between items-center cursor-pointer"
-                    onClick={() => setShowSubTasks(!showSubTasks)}
-                >
-                    <p className="font-semibold">Sub-task (5)</p>
-                    {showSubTasks ? <FiChevronUp /> : <FiChevronDown />}
-                </div>
-                <SmoothToggle open={showSubTasks}>
-                    {showSubTasks && (
-                        <SubTaskTable
-                            data={[
-                                { id: 1, code: "PLHB-0001", summary: "Tính năng đăng ký tài khoản", assignee: "Nguyễn Văn An", status: "To Do" },
-                                { id: 2, code: "PLHB-0002", summary: "Validate form", assignee: "Nguyễn Văn A", status: "In Progress" },
-                            ]}
-                        />
-                    )}
-                </SmoothToggle>
-            </div>
+            <SubTaskIssue issueId={issueIdNumber} issueSubTaskNum={issueInfo.subtasks.length | 0} />
 
             {/* Activity */}
-           <CommentActivity issueId={issueIdNumber}/>
+            <CommentActivity issueId={issueIdNumber} />
         </div>
     );
 };

@@ -24,7 +24,7 @@ import {
 } from "@/schemas/issue.schema";
 
 // Hooks
-import { useAddIssue, useEditIssue } from "@/hooks/useIssue";
+import { useAddIssue, useAllIssuesIds, useEditIssue, useListIssue } from "@/hooks/useIssue";
 import { useListSprint } from "@/hooks/useSprint";
 
 // UI Tags
@@ -39,6 +39,7 @@ interface IssueModalProps {
     mode: "add" | "edit";
     selectedIssue?: IssueFormValues & { id: number };
     isLoading?: boolean;
+    parrentId?: number
 }
 
 const IssueModal: React.FC<IssueModalProps> = ({
@@ -47,6 +48,7 @@ const IssueModal: React.FC<IssueModalProps> = ({
     mode,
     selectedIssue,
     isLoading,
+    parrentId
 }) => {
 
     const {
@@ -54,6 +56,7 @@ const IssueModal: React.FC<IssueModalProps> = ({
         control,
         reset,
         formState: { errors },
+        watch
     } = useForm<IssueFormValues>({
         resolver: zodResolver(IssueSchema),
         defaultValues: {
@@ -68,6 +71,7 @@ const IssueModal: React.FC<IssueModalProps> = ({
             assigneeId: undefined,
             reporterId: undefined,
             createdBy: undefined,
+            parentIssueId: undefined
         },
     });
 
@@ -76,8 +80,13 @@ const IssueModal: React.FC<IssueModalProps> = ({
     const { mutate: mutationAdd, isPending: isAdding } = useAddIssue();
     const { mutate: mutationEdit, isPending: isEditing } = useEditIssue();
 
-    const { data: userList = [] } = useListUser();
-    const { data: sprintList = [] } = useListSprint();
+    const watchType = watch("type");
+    const isSubtask = watchType === IssueType.SUBTASK;
+
+    const { data: userList = [], isLoading: loadingUser } = useListUser();
+    const { data: sprintList = [], isLoading: loadingSprint } = useListSprint();
+    const { data: issueList = [], isLoading: loadingIssue } = useListIssue(isSubtask);
+
 
     // Prefill when editing
     useEffect(() => {
@@ -98,6 +107,7 @@ const IssueModal: React.FC<IssueModalProps> = ({
                 sprintId: undefined,
                 assigneeId: undefined,
                 reporterId: undefined,
+                parentIssueId: undefined,
                 createdBy: currentUser?.id,
             });
         }
@@ -106,7 +116,7 @@ const IssueModal: React.FC<IssueModalProps> = ({
     // ADD
     const handleAdd = (data: IssueFormValues) => {
         mutationAdd(
-            { ...data, createdBy: currentUser?.id },
+            { ...data, createdBy: currentUser?.id, parentIssueId: parrentId },
             {
                 onSuccess: () => {
                     toast.success("Issue added successfully!");
@@ -182,7 +192,7 @@ const IssueModal: React.FC<IssueModalProps> = ({
                                 {...field}
                                 allowClear
                                 placeholder="Select type"
-                                 className="w-full"
+                                className="w-full"
                                 value={field.value ?? undefined}
                                 onChange={(v) => field.onChange(v ?? null)}
                                 options={Object.values(IssueType).map((v) => ({
@@ -195,6 +205,32 @@ const IssueModal: React.FC<IssueModalProps> = ({
                     />
                 </FormRow>
 
+                {watchType === IssueType.SUBTASK && (
+                    <FormRow label="Issue" error={errors.parentIssueId?.message}>
+                        <Controller
+                            name="parentIssueId"
+                            control={control}
+                            render={({ field }) => (
+                                <Select
+                                    {...field}
+                                    allowClear
+                                    value={field.value ?? undefined}
+                                    loading={loadingIssue}
+                                    placeholder="Select issue"
+                                    className="w-full"
+                                    onChange={(v) => field.onChange(v ?? null)}
+                                    options={issueList.map((s: any) => ({
+                                        value: s.id,
+                                        label: s.name,
+                                    }))}
+                                    showSearch
+                                    optionFilterProp="label"
+                                />
+                            )}
+                        />
+                    </FormRow>
+                )}
+
                 {/* Sprint */}
                 <FormRow label="Sprint" error={errors.sprintId?.message}>
                     <Controller
@@ -205,8 +241,9 @@ const IssueModal: React.FC<IssueModalProps> = ({
                                 {...field}
                                 allowClear
                                 value={field.value ?? undefined}
+                                loading={loadingSprint}
                                 placeholder="Select sprint"
-                                 className="w-full"
+                                className="w-full"
                                 onChange={(v) => field.onChange(v ?? null)}
                                 options={sprintList.map((s: any) => ({
                                     value: s.id,
@@ -228,7 +265,7 @@ const IssueModal: React.FC<IssueModalProps> = ({
                                 {...field}
                                 allowClear
                                 placeholder="Select status"
-                                 className="w-full"
+                                className="w-full"
                                 value={field.value ?? undefined}
                                 onChange={(v) => field.onChange(v ?? null)}
                                 options={Object.values(IssueStatus).map((v) => ({
@@ -251,7 +288,7 @@ const IssueModal: React.FC<IssueModalProps> = ({
                                 {...field}
                                 allowClear
                                 placeholder="Select priority"
-                                 className="w-full"
+                                className="w-full"
                                 value={field.value ?? undefined}
                                 onChange={(v) => field.onChange(v ?? null)}
                                 options={Object.values(IssuePriority).map((v) => ({
@@ -274,7 +311,7 @@ const IssueModal: React.FC<IssueModalProps> = ({
                                 {...field}
                                 mode="multiple"
                                 allowClear
-                                 className="w-full"
+                                className="w-full"
                                 placeholder="Select tags"
                                 value={field.value ?? []}
                                 onChange={(v) => field.onChange(v)}
@@ -329,7 +366,8 @@ const IssueModal: React.FC<IssueModalProps> = ({
                             <Select
                                 {...field}
                                 allowClear
-                                 className="w-full"
+                                className="w-full"
+                                loading={loadingUser}
                                 value={field.value ?? undefined}
                                 placeholder="Select assignee"
                                 onChange={(v) => field.onChange(v ?? null)}
@@ -354,7 +392,8 @@ const IssueModal: React.FC<IssueModalProps> = ({
                                 allowClear
                                 value={field.value ?? undefined}
                                 placeholder="Select reporter"
-                                 className="w-full"
+                                loading={loadingUser}
+                                className="w-full"
                                 onChange={(v) => field.onChange(v ?? null)}
                                 options={userList.map((u: any) => ({
                                     value: u.id,

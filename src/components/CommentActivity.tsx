@@ -4,12 +4,6 @@ import { useState } from "react";
 import { Tabs, Spin, message, Button } from "antd";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import SmoothToggle from "./SmothToggle";
-import {
-    useGetCommentByIssueId,
-    useAddComment,
-} from "@/hooks/useComment"; // chỉnh path cho đúng
-import { useAppSelector } from "@/hooks/reduxHook";
-import { FaUser } from "react-icons/fa";
 import CommentTab from "./CommentTab";
 
 const CommentActivity = ({ issueId }: { issueId: number; }) => {
