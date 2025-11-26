@@ -14,6 +14,7 @@ import { IssueTypeTag } from "@/components/tag/IssueTypeTag";
 import { IssuePriorityTag } from "@/components/tag/IssuePriorityTag";
 import { IssueTagList } from "@/components/tag/IssueTagList";
 import { IssueStatusTag } from "@/components/tag/IssueStatusTag";
+import CommentActivity from "@/components/CommentActivity";
 
 
 
@@ -131,40 +132,7 @@ const DetailIssue = () => {
             </div>
 
             {/* Activity */}
-            <div>
-                <div
-                    className="flex justify-between items-center cursor-pointer"
-                    onClick={() => setShowActivity(!showActivity)}
-                >
-                    <p className="font-semibold">Activity</p>
-                    {showActivity ? <FiChevronUp /> : <FiChevronDown />}
-                </div>
-                <SmoothToggle open={showActivity}>
-                    <div className="flex flex-col gap-2">
-                        {showActivity && (
-                            <>
-                                <div className="mb-4">
-                                    <p className="font-semibold">Nguyễn Văn An (annv1)</p>
-                                    <p className="text-gray-700 text-sm">We just need to understand the costs...</p>
-                                    <span className="text-xs text-gray-400">08:56 15/11/2025</span>
-                                </div>
-
-                                <div className="mb-4">
-                                    <p className="font-semibold">Nguyễn Văn An (annv1)</p>
-                                    <p className="text-gray-700 text-sm">Waiting for the information from other teams...</p>
-                                    <span className="text-xs text-gray-400">08:56 15/11/2025</span>
-                                </div>
-
-                                <textarea className="w-full border p-2 rounded" placeholder="Add a comment"></textarea>
-
-                                <button className="mt-2 px-4 py-1 bg-blue-600 text-white rounded">
-                                    Comment
-                                </button>
-                            </>
-                        )}
-                    </div>
-                </SmoothToggle>
-            </div>
+           <CommentActivity issueId={issueIdNumber}/>
         </div>
     );
 };
