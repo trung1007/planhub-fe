@@ -35,7 +35,7 @@ const HistoryTab = ({
                         {createdInfor.fullName} ({createdInfor.username})
                     </span>{" "}
                     created this issue at{" "}
-                    <span className="font-semibold">{createdInfor.createdAt}</span>
+                    <span className="font-semibold">{formatDateTime(createdInfor.createdAt)}</span>
                 </p>
             </div>
 
@@ -53,7 +53,7 @@ const HistoryTab = ({
                                 {item.changeName} ({item.changeUser})
                             </span>{" "}
                             made change at{" "}
-                            <span className="font-semibold">{item.created_at}</span>
+                            <span className="font-semibold">{formatDateTime(item.created_at)}</span>
                         </p>
 
                         {/* ACTION TEXT */}
