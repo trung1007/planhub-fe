@@ -58,3 +58,9 @@ export const getListIssue = async () => {
   return response.data;
 };
 
+export const getIssueHistory = async (issueId:number) => {
+  const response = await api.get(`/core-service/issue-history/${issueId}`);
+  return response.data;
+};
+
+

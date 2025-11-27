@@ -9,7 +9,6 @@ const typeColors: Record<IssueType, string> = {
   story: "green",
   feature: "gold",
   improvement:"purple",
-  subtask: "orange"
 };
 
 export const IssueTypeTag = ({ type }: { type: IssueType }) => {

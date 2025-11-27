@@ -80,12 +80,12 @@ const IssueModal: React.FC<IssueModalProps> = ({
     const { mutate: mutationAdd, isPending: isAdding } = useAddIssue();
     const { mutate: mutationEdit, isPending: isEditing } = useEditIssue();
 
-    const watchType = watch("type");
-    const isSubtask = watchType === IssueType.SUBTASK;
+    // const watchType = watch("type");
+    // const isSubtask = watchType === IssueType.SUBTASK;
 
     const { data: userList = [], isLoading: loadingUser } = useListUser();
     const { data: sprintList = [], isLoading: loadingSprint } = useListSprint();
-    const { data: issueList = [], isLoading: loadingIssue } = useListIssue(isSubtask);
+    // const { data: issueList = [], isLoading: loadingIssue } = useListIssue(isSubtask);
 
 
     // Prefill when editing
@@ -205,7 +205,7 @@ const IssueModal: React.FC<IssueModalProps> = ({
                     />
                 </FormRow>
 
-                {watchType === IssueType.SUBTASK && (
+                {/* {watchType === IssueType.SUBTASK && (
                     <FormRow label="Issue" error={errors.parentIssueId?.message}>
                         <Controller
                             name="parentIssueId"
@@ -229,7 +229,7 @@ const IssueModal: React.FC<IssueModalProps> = ({
                             )}
                         />
                     </FormRow>
-                )}
+                )} */}
 
                 {/* Sprint */}
                 <FormRow label="Sprint" error={errors.sprintId?.message}>

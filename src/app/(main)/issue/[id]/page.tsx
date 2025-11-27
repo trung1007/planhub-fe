@@ -9,7 +9,7 @@ import { FiPaperclip, FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { usePathname } from "next/navigation";
 import AttachmentUpload from "@/components/AttachmentUpload";
 import { useGetDetailIssue } from "@/hooks/useIssue";
-import { formatDateDMY } from "@/utils/format";
+import { formatDateDMY, formatDateTime } from "@/utils/format";
 import { IssueTypeTag } from "@/components/tag/IssueTypeTag";
 import { IssuePriorityTag } from "@/components/tag/IssuePriorityTag";
 import { IssueTagList } from "@/components/tag/IssueTagList";
@@ -17,11 +17,7 @@ import { IssueStatusTag } from "@/components/tag/IssueStatusTag";
 import CommentActivity from "@/components/CommentActivity";
 import SubTaskIssue from "@/components/SubtaskIssue";
 
-
-
 const DetailIssue = () => {
-    const [showSubTasks, setShowSubTasks] = useState(true);
-    const [showActivity, setShowActivity] = useState(true);
     const pathname = usePathname();
     const [issueIdNumber, setIssueIdNumber] = useState<number | undefined>(undefined);
 
@@ -50,6 +46,12 @@ const DetailIssue = () => {
     // Nếu API trả null
     if (!issueInfo) {
         return <div>Issue not found.</div>;
+    }
+
+    const createdInfor = {
+        username: issueInfo.createdUser,
+        fullName: issueInfo.createdName,
+        createdAt: formatDateTime(issueInfo.createdAt)
     }
 
     return (
@@ -94,8 +96,8 @@ const DetailIssue = () => {
                             label="Status"
                             value={<IssueStatusTag status={issueInfo.status} />}
                         />
-                        <InfoRow label="Created At" value={formatDateDMY(issueInfo.createdAt)} />
-                        <InfoRow label="Updated At" value={formatDateDMY(issueInfo.updatedAt)} />
+                        <InfoRow label="Created At" value={formatDateTime(issueInfo.createdAt)} />
+                        <InfoRow label="Updated At" value={formatDateTime(issueInfo.updatedAt)} />
                     </div>
 
                 </div>
@@ -112,10 +114,10 @@ const DetailIssue = () => {
             {/* Attachments */}
             <AttachmentUpload issueId={issueIdNumber} />
             {/* Sub-task */}
-            <SubTaskIssue issueId={issueIdNumber} issueSubTaskNum={issueInfo.subtasks.length | 0} />
+            <SubTaskIssue issueId={issueIdNumber} issueSubTaskNum={issueInfo.subtasksNum | 0} />
 
             {/* Activity */}
-            <CommentActivity issueId={issueIdNumber} />
+            <CommentActivity issueId={issueIdNumber} createdInfor={createdInfor} />
         </div>
     );
 };

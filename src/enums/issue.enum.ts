@@ -30,5 +30,21 @@ export enum IssueType {
   STORY = "story",
   FEATURE = "feature",
   IMPROVEMENT = "improvement",
-  SUBTASK = 'subtask'
+}
+
+
+export enum HistoryActionText {
+  // Issue
+  issue_create = "Issue created",
+  issue_update = "Issue updated",
+  issue_delete = "Issue deleted",
+
+  // Comment
+  comment_add = "Comment added",
+  comment_edit = "Comment edited",
+  comment_delete = "Comment deleted",
+
+  // Attachment
+  attachment_add = "Attachment added",
+  attachment_delete = "Attachment deleted",
 }

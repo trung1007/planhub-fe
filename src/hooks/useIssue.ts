@@ -10,6 +10,7 @@ import {
   getAllIssue,
   getAllIssueIds,
   getIssueById,
+  getIssueHistory,
   getListIssue,
   getSubtasksByIssueId,
 } from "@/services/issue.service";
@@ -126,3 +127,15 @@ export const useAllSubtask = (
     refetchOnMount: false,
   });
 };
+
+export const useIssueHistory = (issue_id:number) => {
+  return useQuery({
+    queryKey: ["issueHistory"],
+    queryFn: () => getIssueHistory(issue_id),
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+  });
+};
+

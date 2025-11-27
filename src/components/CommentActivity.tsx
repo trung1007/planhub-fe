@@ -5,8 +5,15 @@ import { Tabs, Spin, message, Button } from "antd";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import SmoothToggle from "./SmothToggle";
 import CommentTab from "./CommentTab";
+import HistoryTab from "./HistoryTab";
 
-const CommentActivity = ({ issueId }: { issueId: number; }) => {
+interface CreatedInfo {
+  fullName: string;
+  username: string;
+  createdAt: string; // hoặc Date nếu bạn muốn
+}
+
+const CommentActivity = ({ issueId, createdInfor }: { issueId: number; createdInfor: CreatedInfo }) => {
     const [showActivity, setShowActivity] = useState(true);
 
     const commentTab = {
@@ -21,38 +28,7 @@ const CommentActivity = ({ issueId }: { issueId: number; }) => {
         key: "history",
         label: "History",
         children: (
-            <div className="flex flex-col gap-3 text-sm">
-                {/* History issue (mock / TODO: call API history sau) */}
-                <div>
-                    <p className="font-semibold">Status changed</p>
-                    <p className="text-gray-700">
-                        Open → In Progress by Nguyễn Văn An (annv1)
-                    </p>
-                    <span className="text-xs text-gray-400">
-                        08:00 15/11/2025
-                    </span>
-                </div>
-
-                <div>
-                    <p className="font-semibold">Priority changed</p>
-                    <p className="text-gray-700">
-                        Medium → High by Trần Thị B (btt2)
-                    </p>
-                    <span className="text-xs text-gray-400">
-                        10:15 16/11/2025
-                    </span>
-                </div>
-
-                <div>
-                    <p className="font-semibold">Assignee changed</p>
-                    <p className="text-gray-700">
-                        Unassigned → Nguyễn Văn An (annv1)
-                    </p>
-                    <span className="text-xs text-gray-400">
-                        14:20 17/11/2025
-                    </span>
-                </div>
-            </div>
+            <HistoryTab issueId={issueId} createdInfor={createdInfor} />
         ),
     };
 
