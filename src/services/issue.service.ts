@@ -58,9 +58,18 @@ export const getListIssue = async () => {
   return response.data;
 };
 
-export const getIssueHistory = async (issueId:number) => {
-  const response = await api.get(`/core-service/issue-history/${issueId}`);
+// export const getIssueHistory = async (issueId:number) => {
+//   const response = await api.get(`/core-service/issue-history/${issueId}`);
+//   return response.data;
+// };
+
+export const getIssueHistory = async (
+  issueId: number,
+  page: number = 1,
+  limit: number = 10
+) => {
+  const response = await api.get(`/core-service/issue-history/${issueId}`, {
+    params: { page, limit },
+  });
   return response.data;
 };
-
-

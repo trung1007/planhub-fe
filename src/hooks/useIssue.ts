@@ -131,13 +131,26 @@ export const useAllSubtask = (
   });
 };
 
-export const useIssueHistory = (issue_id: number) => {
+// export const useIssueHistory = (issue_id: number) => {
+//   return useQuery({
+//     queryKey: ["issueHistory"],
+//     queryFn: () => getIssueHistory(issue_id),
+//     staleTime: 1000 * 60,
+//     refetchOnWindowFocus: false,
+//     refetchOnReconnect: false,
+//     refetchOnMount: false,
+//   });
+// };
+
+export const useIssueHistory = (
+  issueId: number,
+  page: number,
+  limit: number = 10
+) => {
   return useQuery({
-    queryKey: ["issueHistory"],
-    queryFn: () => getIssueHistory(issue_id),
+    queryKey: ["issueHistory", issueId, page, limit],
+    queryFn: () => getIssueHistory(issueId, page, limit),
+    placeholderData: keepPreviousData,
     staleTime: 1000 * 60,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    refetchOnMount: false,
   });
 };

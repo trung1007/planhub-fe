@@ -3,6 +3,7 @@
 import { HistoryActionText } from "@/enums/issue.enum";
 import { useIssueHistory } from "@/hooks/useIssue";
 import { formatDateTime, formatHistoryDetail } from "@/utils/format";
+import { useEffect, useState } from "react";
 
 interface CreatedInfo {
     fullName: string;
@@ -17,7 +18,26 @@ const HistoryTab = ({
     issueId: number;
     createdInfor: CreatedInfo;
 }) => {
-    const { data: historyResponse = [], isLoading } = useIssueHistory(issueId);
+    const [page, setPage] = useState(1);
+    const [allHistory, setAllHistory] = useState<any[]>([]);
+    const limit = 10;
+    const { data: historyResponse = [], isLoading } = useIssueHistory(issueId, page, limit);
+
+    const currentPageData = historyResponse?.data || [];
+    const total = historyResponse?.total || 0;
+
+    useEffect(() => {
+        if (currentPageData.length > 0) {
+            setAllHistory(prev => {
+                // tránh bị duplicate nếu query refetch
+                const ids = new Set(prev.map(item => item.id));
+
+                const newItems = currentPageData.filter((item: any) => !ids.has(item.id));
+
+                return [...prev, ...newItems];
+            });
+        }
+    }, [currentPageData]);
 
     if (isLoading) return <p>Loading issue history...</p>;
 
@@ -38,11 +58,11 @@ const HistoryTab = ({
             <hr />
             <div className="max-h-[220px] overflow-y-auto pr-2 space-y-4">
                 {/* HISTORY ITEMS */}
-                {historyResponse.length === 0 && (
+                {allHistory.length === 0 && (
                     <p className="text-gray-500">No history available.</p>
                 )}
 
-                {historyResponse.map((item: any) => (
+                {allHistory.map((item: any) => (
                     <div key={item.id} className="flex flex-col">
                         <p>
                             <span className="font-semibold">
@@ -62,6 +82,15 @@ const HistoryTab = ({
                         </div>
                     </div>
                 ))}
+                {allHistory.length < total && (
+                    <button
+                        disabled={isLoading}
+                        onClick={() => setPage((prev) => prev + 1)}
+                        className="text-primary mt-2 underline"
+                    >
+                        {isLoading ? "Loading..." : "Load more"}
+                    </button>
+                )}
             </div>
         </div>
     );
