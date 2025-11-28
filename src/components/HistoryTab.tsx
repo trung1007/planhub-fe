@@ -1,7 +1,4 @@
-
-
 "use client";
-
 
 import { HistoryActionText } from "@/enums/issue.enum";
 import { useIssueHistory } from "@/hooks/useIssue";
@@ -22,7 +19,6 @@ const HistoryTab = ({
 }) => {
     const { data: historyResponse = [], isLoading } = useIssueHistory(issueId);
 
-
     if (isLoading) return <p>Loading issue history...</p>;
 
     return (
@@ -35,7 +31,7 @@ const HistoryTab = ({
                         {createdInfor.fullName} ({createdInfor.username})
                     </span>{" "}
                     created this issue at{" "}
-                    <span className="font-semibold">{formatDateTime(createdInfor.createdAt)}</span>
+                    <span className="font-semibold">{createdInfor.createdAt}</span>
                 </p>
             </div>
 

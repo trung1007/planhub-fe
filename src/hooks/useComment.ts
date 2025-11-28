@@ -22,6 +22,7 @@ export const useAddComment = () => {
     mutationFn: (data: CommentFormValues) => createComment(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comments"] });
+      queryClient.invalidateQueries({ queryKey: ["issueHistory"] });
     },
   });
 };
@@ -34,6 +35,7 @@ export const useEditComment = () => {
       editComment(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comments"] });
+      queryClient.invalidateQueries({ queryKey: ["issueHistory"] });
     },
   });
 };
@@ -45,6 +47,7 @@ export const useDeleteComment = () => {
     mutationFn: (id: number) => deleteComment(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comments"] });
+      queryClient.invalidateQueries({ queryKey: ["issueHistory"] });
     },
   });
 };

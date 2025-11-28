@@ -1,25 +1,28 @@
 "use client";
 
-
-import SmoothToggle from "@/components/SmothToggle";
-import SubTaskTable from "@/components/table/SubTaskTable";
 import { useEffect, useState } from "react";
-import { FiPaperclip, FiChevronDown, FiChevronUp } from "react-icons/fi";
-
 import { usePathname } from "next/navigation";
 import AttachmentUpload from "@/components/AttachmentUpload";
 import { useGetDetailIssue } from "@/hooks/useIssue";
-import { formatDateDMY, formatDateTime } from "@/utils/format";
+import { formatDateTime } from "@/utils/format";
 import { IssueTypeTag } from "@/components/tag/IssueTypeTag";
 import { IssuePriorityTag } from "@/components/tag/IssuePriorityTag";
 import { IssueTagList } from "@/components/tag/IssueTagList";
 import { IssueStatusTag } from "@/components/tag/IssueStatusTag";
 import CommentActivity from "@/components/CommentActivity";
 import SubTaskIssue from "@/components/SubtaskIssue";
+import { useListUser } from "@/hooks/useUser";
+import { useListSprint } from "@/hooks/useSprint";
+import { InfoRowEditable } from "@/components/InfoRowEditable";
+import { IssuePriority, IssueStatus, IssueType, TagEnum } from "@/enums/issue.enum";
+import { Tag } from "antd";
 
 const DetailIssue = () => {
     const pathname = usePathname();
     const [issueIdNumber, setIssueIdNumber] = useState<number | undefined>(undefined);
+
+    const { data: userList = [], isLoading: loadingUser } = useListUser();
+    const { data: sprintList = [], isLoading: loadingSprint } = useListSprint();
 
     useEffect(() => {
         if (pathname) {
@@ -71,30 +74,110 @@ const DetailIssue = () => {
 
                     {/* Left column */}
                     <div className="space-y-2">
-
                         <InfoRow label="Project" value={issueInfo.projectName} />
                         <InfoRow label="Release" value={issueInfo.releaseName} />
-                        <InfoRow
+                        <InfoRowEditable
+                            label="Sprint"
+                            value={issueInfo.sprintId}
+                            options={sprintList.map((sprint: any) => ({
+                                value: sprint.id,
+                                label: sprint.name,
+                            }))}
+                            renderValue={(id) => {
+                                const sprint = sprintList.find((sprint: any) => sprint.id === id);
+                                return sprint ? `${sprint.name}` : "Not Found";
+                            }}
+                            issueId={issueIdNumber}
+                            currentIssueValue={issueInfo}
+                            property="sprintId"
+                        />
+                        <InfoRowEditable
                             label="Type"
-                            value={<IssueTypeTag type={issueInfo.type} />}
+                            value={issueInfo.type || []}
+                            editType="select"
+                            options={Object.values(IssueType).map((v) => ({
+                                value: v,
+                                label: <IssueTypeTag type={v} />,
+                            }))}
+                            renderValue={() => <IssueTypeTag type={issueInfo.type} />}
+                            issueId={issueIdNumber}
+                            currentIssueValue={issueInfo}
+                            property="type"
                         />
-                        <InfoRow
-                            label="Priority"
-                            value={<IssuePriorityTag priority={issueInfo.priority} />}
-                        />
-                        <InfoRow
+                        <InfoRowEditable
                             label="Tag"
-                            value={<IssueTagList tags={issueInfo.tags || []} />}
+                            value={issueInfo.tags || []}
+                            mode="multiple"
+                            editType="select"
+                            options={Object.values(TagEnum).map((t) => ({
+                                value: t,
+                                label: <IssueTagList tags={[t]} />,
+                            }))}
+                            renderValue={() => <IssueTagList tags={issueInfo.tags} />}
+                            issueId={issueIdNumber}
+                            currentIssueValue={issueInfo}
+                            property="tags"
                         />
                     </div>
 
                     {/* Right column */}
                     <div className="space-y-2">
-                        <InfoRow label="Assignee" value={issueInfo.assigneeName || "Unassigned"} />
-                        <InfoRow label="Reporter" value={issueInfo.reporterName || "Unassigned"} />
-                        <InfoRow
+                        {/* <InfoRow label="Assignee" value={issueInfo.assigneeName || "Unassigned"} /> */}
+                        <InfoRowEditable
+                            label="Assignee"
+                            value={issueInfo.assigneeId}
+                            options={userList.map((u: any) => ({
+                                value: u.id,
+                                label: u.username,
+                            }))}
+                            renderValue={(id) => {
+                                const user = userList.find((u: any) => u.id === id);
+                                return user ? `${user.username}` : "Unassigned";
+                            }}
+                            issueId={issueIdNumber}
+                            currentIssueValue={issueInfo}
+                            property="assigneeId"
+                        />
+                        <InfoRowEditable
+                            label="Reporter"
+                            value={issueInfo.reporterId}
+                            options={userList.map((u: any) => ({
+                                value: u.id,
+                                label: u.username,
+                            }))}
+                            renderValue={(id) => {
+                                const user = userList.find((u: any) => u.id === id);
+                                return user ? `${user.username}` : "Unassigned";
+                            }}
+                            issueId={issueIdNumber}
+                            currentIssueValue={issueInfo}
+                            property="reporterId"
+                        />
+                        <InfoRowEditable
                             label="Status"
-                            value={<IssueStatusTag status={issueInfo.status} />}
+                            value={issueInfo.status}
+                            editType="select"
+                            options={Object.values(IssueStatus).map((v) => ({
+                                value: v,
+                                label: <IssueStatusTag status={v} />,
+                            }))}
+                            renderValue={() => <IssueStatusTag status={issueInfo.status} />}
+                            issueId={issueIdNumber}
+                            currentIssueValue={issueInfo}
+                            property="status"
+                        />
+                        <InfoRowEditable
+                            label="Priority"
+                            value={issueInfo.priority || []}
+                            editType="select"
+                            options={Object.values(IssuePriority).map((v) => ({
+                                value: v,
+                                label: <IssuePriorityTag priority={v} />,
+                            }))}
+                            renderValue={() => <IssuePriorityTag priority={issueInfo.priority} />}
+                            issueId={issueIdNumber}
+                            currentIssueValue={issueInfo}
+                            property="priority"
                         />
                         <InfoRow label="Created At" value={formatDateTime(issueInfo.createdAt)} />
                         <InfoRow label="Updated At" value={formatDateTime(issueInfo.updatedAt)} />
@@ -104,10 +187,21 @@ const DetailIssue = () => {
 
                 {/* Description */}
                 <div className="mt-6">
-                    <p className="font-semibold text-gray-800 mb-1">Description</p>
+                    {/* <p className="font-semibold text-gray-800 mb-1">Description</p>
                     <p className="text-gray-600 leading-relaxed whitespace-pre-line">
                         {issueInfo.description}
-                    </p>
+                    </p> */}
+                    <InfoRowEditable
+                        property="description"
+                        label="Description"
+                        issueId={issueIdNumber}
+                        currentIssueValue={issueInfo}
+                        value={issueInfo.description}
+                        editType="textarea"
+                        renderValue={(v) => (
+                            <p className="text-gray-600 whitespace-pre-line">{v}</p>
+                        )}
+                    />
                 </div>
             </div>
 

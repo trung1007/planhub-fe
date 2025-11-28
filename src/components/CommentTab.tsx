@@ -72,7 +72,7 @@ const CommentTab = ({ issueId }: { issueId: number }) => {
             {!isLoading &&
                 !isError &&
                 comments.map((c: any) => (
-                    <CommentElement comment={c} currentUser = {currentUser} />
+                    <CommentElement key={JSON.stringify(c)} comment={c} currentUser = {currentUser} />
                 ))}
 
             {/* Ô nhập comment mới */}

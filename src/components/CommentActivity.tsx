@@ -20,7 +20,7 @@ const CommentActivity = ({ issueId, createdInfor }: { issueId: number; createdIn
         key: "comments",
         label: "Comments",
         children: (
-            <CommentTab issueId={issueId} />
+            <CommentTab issueId={issueId} key={JSON.stringify(issueId)} />
         ),
     };
 

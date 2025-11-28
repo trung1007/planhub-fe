@@ -63,6 +63,7 @@ export const useAddIssue = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["issues"] });
       queryClient.invalidateQueries({ queryKey: ["subtasks"] });
+      queryClient.invalidateQueries({ queryKey: ["issueHistory"] });
     },
   });
 };
@@ -95,7 +96,8 @@ export const useEditIssue = () => {
       editIssue(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["issues"] });
-      queryClient.invalidateQueries({ queryKey: ["subtasks"] });
+      queryClient.invalidateQueries({ queryKey: ["issueDetail"] });
+      queryClient.invalidateQueries({ queryKey: ["issueHistory"] });
     },
   });
 };
@@ -108,6 +110,7 @@ export const useDeleteIssue = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["issues"] });
       queryClient.invalidateQueries({ queryKey: ["subtasks"] });
+      queryClient.invalidateQueries({ queryKey: ["issueHistory"] });
     },
   });
 };
@@ -128,7 +131,7 @@ export const useAllSubtask = (
   });
 };
 
-export const useIssueHistory = (issue_id:number) => {
+export const useIssueHistory = (issue_id: number) => {
   return useQuery({
     queryKey: ["issueHistory"],
     queryFn: () => getIssueHistory(issue_id),
@@ -138,4 +141,3 @@ export const useIssueHistory = (issue_id:number) => {
     refetchOnMount: false,
   });
 };
-
