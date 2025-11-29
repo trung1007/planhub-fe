@@ -30,7 +30,7 @@ export const useAllIssue = (page: number = 1, limit: number = 10) => {
     staleTime: 1000 * 60,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
   });
 };
 
@@ -51,7 +51,7 @@ export const useListIssue = (enabled: boolean = true) => {
     staleTime: 1000 * 60,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
   });
 };
 
@@ -61,21 +61,28 @@ export const useAddIssue = () => {
   return useMutation({
     mutationFn: (data: IssueFormValues) => createIssue(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["issues"] });
-      queryClient.invalidateQueries({ queryKey: ["subtasks"] });
-      queryClient.invalidateQueries({ queryKey: ["issueHistory"] });
+      queryClient.invalidateQueries({ queryKey: ["issues"], exact: false });
+      queryClient.invalidateQueries({ queryKey: ["subtasks"], exact: false });
+      queryClient.invalidateQueries({
+        queryKey: ["issueHistory"],
+        exact: false,
+      });
     },
   });
 };
 
-export const useAssignIssueToSprit = () => {
+export const useAssignIssueToSprint = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: AssignIssueToSprintInput) => assignIssueToSprint(data),
+    mutationFn: (issueId: number) => assignIssueToSprint(issueId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["issues"] });
-      queryClient.invalidateQueries({ queryKey: ["subtasks"] });
+      queryClient.invalidateQueries({ queryKey: ["issues"], exact: false });
+      queryClient.invalidateQueries({ queryKey: ["subtasks"], exact: false });
+      queryClient.invalidateQueries({
+        queryKey: ["issueHistory"],
+        exact: false,
+      });
     },
   });
 };
@@ -85,6 +92,9 @@ export const useGetDetailIssue = (id: number) => {
     queryKey: ["issueDetail", id],
     queryFn: () => getIssueById(id),
     enabled: !!id,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
   });
 };
 
@@ -92,12 +102,15 @@ export const useEditIssue = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: IssueFormValues }) =>
+    mutationFn: ({ id, data }: { id: number; data: any }) =>
       editIssue(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["issues"] });
-      queryClient.invalidateQueries({ queryKey: ["issueDetail"] });
-      queryClient.invalidateQueries({ queryKey: ["issueHistory"] });
+      queryClient.invalidateQueries({ queryKey: ["issues"], exact: false });
+      queryClient.invalidateQueries({ queryKey: ["subtasks"], exact: false });
+      queryClient.invalidateQueries({
+        queryKey: ["issueHistory"],
+        exact: false,
+      });
     },
   });
 };
@@ -108,9 +121,12 @@ export const useDeleteIssue = () => {
   return useMutation({
     mutationFn: (id: number) => deleteIssue(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["issues"] });
-      queryClient.invalidateQueries({ queryKey: ["subtasks"] });
-      queryClient.invalidateQueries({ queryKey: ["issueHistory"] });
+      queryClient.invalidateQueries({ queryKey: ["issues"], exact: false });
+      queryClient.invalidateQueries({ queryKey: ["subtasks"], exact: false });
+      queryClient.invalidateQueries({
+        queryKey: ["issueHistory"],
+        exact: false,
+      });
     },
   });
 };

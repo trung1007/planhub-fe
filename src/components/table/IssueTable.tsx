@@ -5,82 +5,77 @@ import { useState } from "react";
 import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
 import ButtonGroup from "../ButtonGroupTable";
 import { toast } from "react-toastify";
-import ReleaseStatusTag from "../tag/ReleaseStatusTag";
-import SprintModal from "../modal/SprintModal";
 import { useRouter } from "next/navigation";
-import { useAllIssue, useAllIssuesIds, useAssignIssueToSprit, useDeleteIssue } from "@/hooks/useIssue";
+import { useAllIssue, useAllIssuesIds, useAssignIssueToSprint, useDeleteIssue, useListIssue } from "@/hooks/useIssue";
 import IssueModal from "../modal/IssueModal";
 import { IssueTagList } from "../tag/IssueTagList";
 import { IssueStatusTag } from "../tag/IssueStatusTag";
 import { IssuePriorityTag } from "../tag/IssuePriorityTag";
 import { IssueTypeTag } from "../tag/IssueTypeTag";
-import ActiveSprintModal from "../modal/ActiveSprintModal";
-import { useActiveSprint } from "@/hooks/useSprint";
+
 
 const IssueTable = () => {
     const limit = 10
     const [page, setPage] = useState(1);
     const router = useRouter()
-
-    const [selectedIds, setSelectedIds] = useState<number[]>([]);
-    const { data: allIdsData, refetch: fetchAllIds } = useAllIssuesIds();
-    const allIds = allIdsData?.ids || [];
+    const [selectedIssues, setSelectedIssues] = useState<{ id: number; name: string }[]>([]);
+    const { data: listIssues, refetch: fetchListIssue } = useListIssue();
+    const allIds = listIssues?.length || [];
 
     const handleSelectAll = async (checked: boolean) => {
         if (!checked) {
-            setSelectedIds([]);
+            setSelectedIssues([]);
             return;
         }
 
-        const result = await fetchAllIds();
-        const ids = result.data?.ids || [];
-        setSelectedIds(ids);
+        // lấy toàn bộ issue đang hiển thị
+        const selected = listIssues.map((i: any) => ({
+            id: i.id,
+            name: i.name,
+        }));
+
+        setSelectedIssues(selected);
     };
 
-    const handleSelectOne = (id: number, checked: boolean) => {
+
+    const handleSelectOne = (id: number, name: string, checked: boolean) => {
         if (checked)
-            setSelectedIds((prev) => [...prev, id]);
+            setSelectedIssues((prev) => [...prev, { id, name }]);
         else
-            setSelectedIds((prev) => prev.filter((x) => x !== id));
+            setSelectedIssues((prev) => prev.filter((x) => x.id !== id));
     };
-    const [openActiveSprintModal, setOpenActiveSprintModal] = useState(false);
-    const { mutate: assiginIssue, isPending } = useAssignIssueToSprit();
-    const { data: activeSprints = [] } = useActiveSprint();
-    const handleAddToSprint = (sprintId: number) => {
+    const { mutate: assiginIssue, isPending } = useAssignIssueToSprint();
 
-        if (selectedIds.length === 0) {
-            toast.warning("Please select at least one issues.");
+    const handleAddToSprint = () => {
+        if (selectedIssues.length === 0) {
+            toast.warning("Please select at least one issue.");
             return;
         }
-        assiginIssue(
-            {
-                sprintId, issueIds: selectedIds
-            },
-            {
+
+        selectedIssues.forEach(({ id, name }) => {
+            assiginIssue(id, {
                 onSuccess: () => {
-                    toast.success("Add issue successfully!");
-                    setSelectedIds([]);
+                    toast.success(`Assign issue "${name}" successfully!`);
+                    setSelectedIssues((prev) => prev.filter((i) => i.id !== id));
                 },
                 onError: () => {
-                    toast.error("Failed to add issue!");
-                }
-            }
-        );
+                    toast.warn(`Failed to assign issue "${name}"!`);
+                },
+            });
+        });
     };
-
-
 
     const columns: ColumnsType<any> = [
         {
             title: (
                 <Checkbox
                     checked={
-                        allIds.length > 0 &&
-                        selectedIds.length === allIds.length
+                        allIds > 0 &&
+                        selectedIssues.length === allIds
                     }
                     indeterminate={
-                        selectedIds.length > 0 &&
-                        selectedIds.length < allIds.length
+                        selectedIssues.length > 0 &&
+                        selectedIssues.length < allIds
                     }
                     onChange={(e) => handleSelectAll(e.target.checked)}
                 />
@@ -90,9 +85,9 @@ const IssueTable = () => {
             align: "center",
             render: (_: any, record: any) => (
                 <Checkbox
-                    checked={selectedIds.includes(record.id)}
+                    checked={selectedIssues.some((s) => s.id === record.id)}
                     onChange={(e) =>
-                        handleSelectOne(record.id, e.target.checked)
+                        handleSelectOne(record.id, record.name, e.target.checked)
                     }
                 />
             ),
@@ -146,9 +141,9 @@ const IssueTable = () => {
         },
 
         {
-            title: "Sprint",
-            dataIndex: "sprintName",
-            key: "sprintName",
+            title: "Active Sprint",
+            dataIndex: "activeSprint",
+            key: "activeSprint",
             ellipsis: true,
             width: 150,
         },
@@ -203,10 +198,7 @@ const IssueTable = () => {
         router.push(`/issue/${record.id}`)
     }
 
-
     const handleEdit = (record: any) => {
-        console.log(record);
-
         setSelectedIssue(record);
         setOpenEdit(true);
     };
@@ -231,11 +223,11 @@ const IssueTable = () => {
                 title="Create an issue"
                 secondTitle="Add to active sprint"
                 onSecond={() => {
-                    if (selectedIds.length === 0) {
+                    if (selectedIssues.length === 0) {
                         toast.warn("Please select at least 1 issue");
                         return;
                     }
-                    setOpenActiveSprintModal(true);
+                    handleAddToSprint()
                 }}
                 thirdTitle="Manage sprint"
                 onThird={goToSprint} />
@@ -245,7 +237,7 @@ const IssueTable = () => {
                 className="custom-table w-full"
                 columns={columns}
                 dataSource={data?.items || []}
-                loading={isLoading}
+                loading={isLoading || isPending || isDeleting}
                 pagination={{
                     current: page,
                     pageSize: limit,
@@ -261,14 +253,6 @@ const IssueTable = () => {
             {openAdd && <IssueModal open={openAdd} setOpen={setOpenAdd} mode="add" />}
             {openEdit && <IssueModal open={openEdit} setOpen={setOpenEdit} mode="edit" selectedIssue={selectedIssue} />}
 
-            {openActiveSprintModal && (
-                <ActiveSprintModal
-                    open={openActiveSprintModal}
-                    setOpen={setOpenActiveSprintModal}
-                    sprints={activeSprints}
-                    handleAddToSprint={handleAddToSprint}
-                />
-            )}
         </div>
     )
 }

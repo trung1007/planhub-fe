@@ -23,7 +23,7 @@ export const useAllRole = (page: number = 1, limit: number = 10) => {
     staleTime: 1000 * 60,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
   });
 };
 

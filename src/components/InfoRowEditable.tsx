@@ -37,12 +37,11 @@ export function InfoRowEditable<T = any>({
     const { mutate: mutationEdit, isPending: isEditingField } = useEditIssue()
 
     const handleSave = (newValue: T) => {
-
-        const payload = {
-            ...currentIssueValue,
-            [property]: newValue
-        }
-        console.log(payload);
+        // const payload = {
+        //     ...currentIssueValue,
+        //     [property]: newValue
+        // }
+        const payload = { [property]: newValue };
         mutationEdit({ id: issueId, data: payload }, {
             onSuccess: () => {
                 toast.success("Issue updated successfully!");

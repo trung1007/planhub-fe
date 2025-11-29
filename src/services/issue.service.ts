@@ -15,10 +15,10 @@ export const createIssue = async (data: IssueFormValues) => {
   const response = await api.post("/core-service/issues", data);
   return response.data;
 };
-export const assignIssueToSprint = async (data: AssignIssueToSprintInput) => {
-  const response = await api.patch(
-    "/core-service/issues/assign-to-sprint",
-    data
+export const assignIssueToSprint = async (issueId: number) => {
+  const response = await api.post(
+    "/core-service/issues/assign-to-active-sprint",
+    { issueId: issueId }
   );
   return response.data;
 };
@@ -57,11 +57,6 @@ export const getListIssue = async () => {
   const response = await api.get(`/core-service/issues/issue-list`);
   return response.data;
 };
-
-// export const getIssueHistory = async (issueId:number) => {
-//   const response = await api.get(`/core-service/issue-history/${issueId}`);
-//   return response.data;
-// };
 
 export const getIssueHistory = async (
   issueId: number,

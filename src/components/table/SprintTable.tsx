@@ -24,7 +24,14 @@ const SprintTable = () => {
             fixed: "left" as const,
             render: (_: any, __: any, index: number) => (page - 1) * limit + index + 1,
         },
-
+        {
+            title: "Name",
+            dataIndex: "name",
+            key: "name",
+            ellipsis: true,
+            width: 150,
+        },
+        
         {
             title: "Release Name",
             dataIndex: "releaseName",
@@ -33,13 +40,6 @@ const SprintTable = () => {
             width: 150,
         },
 
-        {
-            title: "Name",
-            dataIndex: "name",
-            key: "name",
-            ellipsis: true,
-            width: 150,
-        },
         {
             title: "Key",
             dataIndex: "key",

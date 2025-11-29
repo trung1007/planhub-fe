@@ -25,7 +25,7 @@ import {
 
 // Hooks
 import { useAddIssue, useAllIssuesIds, useEditIssue, useListIssue } from "@/hooks/useIssue";
-import { useListSprint } from "@/hooks/useSprint";
+import { useActiveSprint, useListSprint } from "@/hooks/useSprint";
 
 // UI Tags
 import { IssueTypeTag } from "../tag/IssueTypeTag";
@@ -84,7 +84,7 @@ const IssueModal: React.FC<IssueModalProps> = ({
     // const isSubtask = watchType === IssueType.SUBTASK;
 
     const { data: userList = [], isLoading: loadingUser } = useListUser();
-    const { data: sprintList = [], isLoading: loadingSprint } = useListSprint();
+    const { data: activeSprintList = [], isLoading: loadingSprint } = useActiveSprint();
     // const { data: issueList = [], isLoading: loadingIssue } = useListIssue(isSubtask);
 
 
@@ -232,7 +232,7 @@ const IssueModal: React.FC<IssueModalProps> = ({
                 )} */}
 
                 {/* Sprint */}
-                <FormRow label="Sprint" error={errors.sprintId?.message}>
+                <FormRow label="Active Sprint" error={errors.sprintId?.message}>
                     <Controller
                         name="sprintId"
                         control={control}
@@ -245,7 +245,7 @@ const IssueModal: React.FC<IssueModalProps> = ({
                                 placeholder="Select sprint"
                                 className="w-full"
                                 onChange={(v) => field.onChange(v ?? null)}
-                                options={sprintList.map((s: any) => ({
+                                options={activeSprintList.map((s: any) => ({
                                     value: s.id,
                                     label: s.name,
                                 }))}

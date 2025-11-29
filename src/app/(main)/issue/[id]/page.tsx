@@ -12,7 +12,7 @@ import { IssueStatusTag } from "@/components/tag/IssueStatusTag";
 import CommentActivity from "@/components/CommentActivity";
 import SubTaskIssue from "@/components/SubtaskIssue";
 import { useListUser } from "@/hooks/useUser";
-import { useListSprint } from "@/hooks/useSprint";
+import { useActiveSprint, useListSprint } from "@/hooks/useSprint";
 import { InfoRowEditable } from "@/components/InfoRowEditable";
 import { IssuePriority, IssueStatus, IssueType, TagEnum } from "@/enums/issue.enum";
 import { Tag } from "antd";
@@ -22,7 +22,7 @@ const DetailIssue = () => {
     const [issueIdNumber, setIssueIdNumber] = useState<number | undefined>(undefined);
 
     const { data: userList = [], isLoading: loadingUser } = useListUser();
-    const { data: sprintList = [], isLoading: loadingSprint } = useListSprint();
+    const { data: activeSprintList = [], isLoading: loadingSprint } = useActiveSprint();
 
     useEffect(() => {
         if (pathname) {
@@ -79,12 +79,12 @@ const DetailIssue = () => {
                         <InfoRowEditable
                             label="Sprint"
                             value={issueInfo.sprintId}
-                            options={sprintList.map((sprint: any) => ({
+                            options={activeSprintList.map((sprint: any) => ({
                                 value: sprint.id,
                                 label: sprint.name,
                             }))}
                             renderValue={(id) => {
-                                const sprint = sprintList.find((sprint: any) => sprint.id === id);
+                                const sprint = activeSprintList.find((sprint: any) => sprint.id === id);
                                 return sprint ? `${sprint.name}` : "Not Found";
                             }}
                             issueId={issueIdNumber}
