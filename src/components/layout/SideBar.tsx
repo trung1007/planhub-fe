@@ -9,6 +9,7 @@ import { FaHome, FaUser, FaCog, FaBars, FaArchive, FaRocket, FaArrowCircleRight,
 import { MdAnalytics } from "react-icons/md";
 import { usePathname } from "next/navigation";
 import { FaBarsProgress } from "react-icons/fa6";
+import { GoWorkflow } from "react-icons/go";
 
 export interface MenuItem {
     label: string;
@@ -19,6 +20,7 @@ export const menuItems = [
     // { label: "Issue", icon: <FaArchive size={20} />, href: "/" },
     { label: "Issue", icon: <FaArchive size={20} />, href: "/issue" },
     { label: "Scrum board", icon: <MdAnalytics size={20} />, href: "/scrum-board" },
+    { label: "Workflow", icon: <GoWorkflow size={20} />, href: "/workflow" },
     { label: "Team", icon: <FaUser size={20} />, href: "/team" },
     { label: "Release", icon: <FaRocket size={20} />, href: "/release" },
     { label: "Sprint", icon: <FaBarsProgress size={20} />, href: "/sprint" },

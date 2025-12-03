@@ -129,7 +129,7 @@ const IssueTable = () => {
             dataIndex: "assigneeName",
             key: "assigneeName",
             ellipsis: true,
-            width: 150,
+            width: 120,
         },
 
         {
@@ -137,7 +137,7 @@ const IssueTable = () => {
             dataIndex: "reporterName",
             key: "reporterName",
             ellipsis: true,
-            width: 150,
+            width: 120,
         },
 
         {
@@ -151,14 +151,14 @@ const IssueTable = () => {
             title: "Status",
             dataIndex: "status",
             key: "status",
-            width: 120,
+            width: 100,
             render: (value) => <IssueStatusTag status={value} />,
         },
         {
             title: "Priority",
             dataIndex: "priority",
             key: "priority",
-            width: 120,
+            width: 100,
             render: (value) => <IssuePriorityTag priority={value} />,
         },
         {

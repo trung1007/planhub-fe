@@ -1,7 +1,6 @@
-import ReleaseTable from "@/components/table/ReleaseTable";
 import WorkflowTable from "@/components/table/WorkflowTable";
 
-const ScrumBoardPage = () => {
+const WorkflowPage = () => {
     return (
         <div className="bg-white h-full w-full flex flex-col">
             <h3 className="text-xl font-semibold mb-4 border-b p-3">Workflow</h3>
@@ -10,4 +9,4 @@ const ScrumBoardPage = () => {
     )
 };
 
-export default ScrumBoardPage;
+export default WorkflowPage;
