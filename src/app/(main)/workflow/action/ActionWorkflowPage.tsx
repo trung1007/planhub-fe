@@ -48,7 +48,11 @@ const ActionWorkflow = ({ id }: { id?: number }) => {
     const router = useRouter()
 
     const [openAddStatus, setOpenAddStatus] = useState(false)
+    const [openEditStatus, setOpenEditStatus] = useState(false)
     const [openAddTransition, setOpenAddTransiton] = useState(false)
+
+    const [selectedStatus, setSelectedStatus] = useState(null);
+
 
     const {
         control,
@@ -147,7 +151,7 @@ const ActionWorkflow = ({ id }: { id?: number }) => {
             width: 80,
             render: (_, record) => (
                 <div className="flex gap-1">
-                    <Button size="small" type="primary">
+                    <Button size="small" type="primary" onClick={() => handleEditStatus(record)} >
                         <FaEdit />
                     </Button>
 
@@ -208,6 +212,28 @@ const ActionWorkflow = ({ id }: { id?: number }) => {
         console.log(payload);
 
     };
+
+
+    const handleEditStatus = (status: any) => {
+        if (status) {
+            setSelectedStatus({
+                ...status,
+                is_start: status.isInitial,
+                is_final: status.isFinal
+            });
+        }
+        setOpenEditStatus(true)
+    }
+
+    const handleUpdateStatus = (updatedStatus: any) => {
+        setListStatusTemp((prevList) =>
+            prevList.map((status) =>
+                status.id === updatedStatus.id ? updatedStatus : status
+            )
+        );
+        setOpenEditStatus(false);
+    };
+
 
     return (
         <div className="flex w-full h-full p-4 gap-4">
@@ -356,8 +382,22 @@ const ActionWorkflow = ({ id }: { id?: number }) => {
                     onAddStatus={(newStatus) => {
                         setListStatusTemp(prev => [...prev, newStatus]);
                     }}
+                    listStatusTemp={listStatusTemp}
                 />
             )}
+
+            {openEditStatus && selectedStatus && (
+                <StatusModal
+                    workflowId={1}
+                    open={openEditStatus}
+                    setOpen={setOpenEditStatus}
+                    mode="edit"
+                    defaultValues={selectedStatus}
+                    onAddStatus={handleUpdateStatus}
+                />
+            )}
+
+
             {openAddTransition && (
                 <TransitionModal
                     workflowId={1}

@@ -24,6 +24,7 @@ interface StatusModalProps {
     isLoading?: boolean;
     status?: any;
     onAddStatus?: (status: any) => void;
+    listStatusTemp?: any[]
 }
 
 const StatusModal: React.FC<StatusModalProps> = ({
@@ -34,7 +35,7 @@ const StatusModal: React.FC<StatusModalProps> = ({
     defaultValues,
     isLoading,
     onAddStatus,
-    status,
+    listStatusTemp = [],
 }) => {
 
     const {
@@ -52,13 +53,13 @@ const StatusModal: React.FC<StatusModalProps> = ({
             color: "#000000",
             is_start: false,
             is_final: false,
-            ...defaultValues,
+            // ...defaultValues,
         },
     });
 
     useEffect(() => {
         reset({
-            workflow_id: workflowId,
+            workflow_id: Number(workflowId),
             name: defaultValues?.name || "",
             color: defaultValues?.color || "#000000",
             is_start: defaultValues?.is_start || false,
@@ -66,8 +67,17 @@ const StatusModal: React.FC<StatusModalProps> = ({
         });
     }, [defaultValues, workflowId, reset]);
 
-    // const { mutate: mutationAdd } = useAddStatus();
-    // const { mutate: mutationEdit } = useEditStatus();
+    useEffect(() => {
+        console.log({ ...listStatusTemp });
+
+    }, [listStatusTemp])
+
+    const isInitialDisabled = listStatusTemp.some(
+        (t) => t.isInitial
+    );
+    const isFinalDisabled = listStatusTemp.some(
+        (t) => t.isFinal
+    );
 
     const title = mode === "add" ? "Add Status" : "Edit Status";
 
@@ -80,44 +90,34 @@ const StatusModal: React.FC<StatusModalProps> = ({
             isFinal: data.is_final ?? false,
         };
 
-        console.log("Add temp status:", newStatus);
-
-        onAddStatus?.(newStatus);  // 🔥 gọi callback truyền sang parent
+        onAddStatus?.(newStatus);
 
         setOpen(false);
         reset();
 
-        // mutationAdd(data, {
-        //     onSuccess: () => {
-        //         toast.success("Status created successfully!");
-        //         setOpen(false);
-        //         reset();
-        //     },
-        //     onError: (err: any) => {
-        //         toast.error(err?.response?.data?.message || "Failed to create status");
-        //     },
-        // });
     };
 
     const handleEdit = (data: StatusInput) => {
-        // mutationEdit(
-        //     { id: status.id, data },
-        //     {
-        //         onSuccess: () => {
-        //             toast.success("Status updated successfully!");
-        //             setOpen(false);
-        //             reset();
-        //         },
-        //         onError: (err: any) => {
-        //             toast.error(err?.response?.data?.message || "Failed to update status");
-        //         },
-        //     }
-        // );
+        const updatedStatus = {
+            ...defaultValues,
+            name: data.name,
+            color: data.color,
+            is_start: data.is_start,
+            is_final: data.is_final,
+        };
+
+        onAddStatus?.(updatedStatus);
+        setOpen(false);
+        reset();
     };
 
+
     const handleSave = (data: StatusInput) => {
-        if (mode === "add") handleAdd(data);
-        else handleEdit(data);
+        if (mode === "add") {
+            handleAdd(data);
+        } else {
+            handleEdit(data);
+        }
     };
 
     return (
@@ -153,9 +153,6 @@ const StatusModal: React.FC<StatusModalProps> = ({
                     <Controller
                         name="color"
                         control={control}
-                        // render={({ field }) => (
-                        //     <Input type="color" {...field} style={{ width: 80, height: 40 }} />
-                        // )}
                         render={({ field }) => (
                             <div className="flex items-center gap-3">
 
@@ -193,7 +190,7 @@ const StatusModal: React.FC<StatusModalProps> = ({
                                         field.onChange(val);
                                         if (val) setValue("is_final", false);
                                     }}
-                                    disabled={isFinal}
+                                    disabled={isFinal || isInitialDisabled}
                                 />
                             );
                         }}
@@ -214,7 +211,7 @@ const StatusModal: React.FC<StatusModalProps> = ({
                                         field.onChange(val);
                                         if (val) setValue("is_start", false);
                                     }}
-                                    disabled={isStart}
+                                    disabled={isStart || isFinalDisabled}
                                 />
                             );
                         }}
