@@ -1,10 +1,18 @@
 import {
+  createWorkflow,
+  deleteWorkflow,
+  editWorkflow,
   getAllWorkflow,
   getStatusByWorkflowId,
   getTransitionByWorkflowId,
   getWorkflowById,
 } from "@/services/workflow.service";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 export const useAllWorkflow = (page: number = 1, limit: number = 10) => {
   return useQuery({
@@ -15,6 +23,52 @@ export const useAllWorkflow = (page: number = 1, limit: number = 10) => {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: true,
+  });
+};
+
+export const useAddWorkflow = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: any) => createWorkflow(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["workflows"], exact: false });
+      queryClient.invalidateQueries({
+        queryKey: ["workflowDetail"],
+        exact: false,
+      });
+    },
+  });
+};
+
+export const useEditWorkflow = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: any }) =>
+      editWorkflow(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["workflows"], exact: false });
+      queryClient.invalidateQueries({
+        queryKey: ["workflowDetail"],
+        exact: false,
+      });
+    },
+  });
+};
+
+export const useDeleteWorkflow = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: number) => deleteWorkflow(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["workflows"], exact: false });
+      queryClient.invalidateQueries({
+        queryKey: ["workflowDetail"],
+        exact: false,
+      });
+    },
   });
 };
 
