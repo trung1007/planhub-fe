@@ -25,7 +25,7 @@ export const StatusSchema = z.object({
 export type StatusInput = z.infer<typeof StatusSchema>;
 
 export const TransitionSchema = z.object({
-  workflow_id: z.number(),
+  workflow_id: z.number().optional(),
   name: z.string().min(1, "Transition name is required"),
   status_id_from: z.number().nullable().optional(),
   status_id_to: z

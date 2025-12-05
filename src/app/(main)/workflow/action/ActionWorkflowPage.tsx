@@ -23,6 +23,7 @@ import {
   useGetTransitionWorkflow,
 } from "@/hooks/useWorkflow";
 import { toast } from "react-toastify";
+import { IssueStatusTag } from "@/components/tag/IssueStatusTag";
 
 // ==============================
 // Types
@@ -31,7 +32,7 @@ import { toast } from "react-toastify";
 interface StatusItem {
   id: number;
   name: string;
-  color: string;
+  // color: string;
   isInitial: boolean;
   isFinal: boolean;
 }
@@ -41,6 +42,8 @@ interface TransitionItem {
   name: string;
   from: string | null;
   to: string;
+  fromId: number,
+  toId: number,
 }
 
 const ActionWorkflow = ({ id }: { id?: number }) => {
@@ -107,7 +110,7 @@ const ActionWorkflow = ({ id }: { id?: number }) => {
       statusList.map((s: any) => ({
         id: s.id,
         name: s.name,
-        color: s.color,
+        // color: s.color,
         isInitial: s.is_start,
         isFinal: s.is_final,
       }))
@@ -123,6 +126,8 @@ const ActionWorkflow = ({ id }: { id?: number }) => {
         name: t.name,
         from: t.from,
         to: t.to,
+        fromId: t.status_id_from,
+        toId: t.status_id_to
       }))
     );
   }, [transitionList]);
@@ -131,16 +136,17 @@ const ActionWorkflow = ({ id }: { id?: number }) => {
     {
       title: "Name",
       dataIndex: "name",
-      width: 130,
+      width: 100,
+      render: (value) => <IssueStatusTag status={value} />,
     },
-    {
-      title: "Color",
-      dataIndex: "color",
-      width: 80,
-      render: (value: string) => (
-        <span style={{ color: value, fontWeight: "bold" }}>{value}</span>
-      ),
-    },
+    // {
+    //   title: "Color",
+    //   dataIndex: "color",
+    //   width: 80,
+    //   render: (value: string) => (
+    //     <span style={{ color: value, fontWeight: "bold" }}>{value}</span>
+    //   ),
+    // },
     {
       title: "Is Initial?",
       dataIndex: "isInitial",
@@ -205,12 +211,14 @@ const ActionWorkflow = ({ id }: { id?: number }) => {
       title: "From",
       dataIndex: "from",
       width: 120,
-      render: (v) => v ?? "-",
+      // render: (v) => v ?? "-",
+      render: (value) => <IssueStatusTag status={value} />,
     },
     {
       title: "To",
       dataIndex: "to",
       width: 120,
+      render: (value) => <IssueStatusTag status={value} />,
     },
     {
       title: "Action",
@@ -248,24 +256,20 @@ const ActionWorkflow = ({ id }: { id?: number }) => {
       statuses: listStatusTemp,
       transitions: listTransitionTemp,
     };
-    console.log(payload);
-
     if (id) {
-        console.log( { id: id, data: payload });
-        
-    //   mutationEdit(
-    //     { id: id, data: payload },
-    //     {
-    //       onSuccess: () => {
-    //         toast.success("Update workflow successfully");
-    //         router.push("/workflow");
-    //       },
-    //       onError: (error: any) => {
-    //         console.log("error:", error);
-    //         toast.error("Update workflow failed");
-    //       },
-    //     }
-    //   );
+      mutationEdit(
+        { id: id, data: payload },
+        {
+          onSuccess: () => {
+            toast.success("Update workflow successfully");
+            router.push("/workflow");
+          },
+          onError: (error: any) => {
+            console.log("error:", error);
+            toast.error("Update workflow failed");
+          },
+        }
+      );
     } else {
       mutationAdd(payload, {
         onSuccess: () => {
@@ -357,6 +361,11 @@ const ActionWorkflow = ({ id }: { id?: number }) => {
 
   const handleDeleteStatus = (id: number) => {
     setListStatusTemp((prev) => prev.filter((s) => s.id !== id));
+    setListTransitionTemp((prev) =>
+      prev.filter(
+        (t) => t.fromId !== id && t.toId !== id
+      )
+    );
   };
 
   const handleDeleteTransition = (id: number) => {

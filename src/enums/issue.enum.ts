@@ -1,10 +1,29 @@
 export enum IssueStatus {
-  TODO = "todo",
-  IN_PROGRESS = "in_progress",
-  REVIEW = "review",
-  DONE = "done",
-  CANCELLED = "cancelled",
+  TO_DO = "to_do", // Trạng thái Todo (Chưa làm)
+  IN_PROGRESS = "in_progress", // Trạng thái Đang tiến hành
+  REVIEW = "review", // Trạng thái Đang review
+  DONE = "done", // Trạng thái Đã hoàn thành
+  CANCELLED = "cancelled", // Trạng thái Bị huỷ
+  REOPEN = "reopen", // Trạng thái Backlog (Đang chờ)
 }
+
+export const statusColors: Record<IssueStatus, string> = {
+  [IssueStatus.TO_DO]: "#FFEB3B",
+  [IssueStatus.IN_PROGRESS]: "#FF9800",
+  [IssueStatus.REVIEW]: "#2196F3",
+  [IssueStatus.DONE]: "#4CAF50",
+  [IssueStatus.CANCELLED]: "#9C27B0",
+  [IssueStatus.REOPEN]: "#F44336", 
+};
+
+export const statusThemes: Record<IssueStatus, string> = {
+  [IssueStatus.TO_DO]: "default",
+  [IssueStatus.IN_PROGRESS]: "orange",
+  [IssueStatus.REVIEW]: "blue",
+  [IssueStatus.DONE]: "green",
+  [IssueStatus.CANCELLED]: "purple",
+  [IssueStatus.REOPEN]: "red",
+};
 
 export enum IssuePriority {
   LOW = "low",
@@ -31,7 +50,6 @@ export enum IssueType {
   FEATURE = "feature",
   IMPROVEMENT = "improvement",
 }
-
 
 export enum HistoryActionText {
   // Issue

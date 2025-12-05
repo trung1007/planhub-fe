@@ -67,7 +67,7 @@ const TransitionModal: React.FC<TransitionModalProps> = ({
   // Tạm thời cho console.log để debug local
   const handleAdd = (data: TransitionInput) => {
     const newTransition = {
-      id: crypto.randomUUID(),
+      id: Math.floor(Math.random() * 1000),
       name: data.name,
       from: statusList.find((s) => s.id === data.status_id_from)?.name ?? null,
       to: statusList.find((s) => s.id === data.status_id_to)?.name ?? "",
@@ -152,10 +152,11 @@ const TransitionModal: React.FC<TransitionModalProps> = ({
                 className="w-full"
                 options={statusList.map((s) => ({
                   value: s.id,
-                  label: s.name,
+                  label: s.name.replace("_", " ").toLocaleUpperCase(),
                 }))}
                 // Không cho chọn trùng To
                 disabled={field.value !== null && field.value === toId}
+                
               />
             )}
           />
@@ -173,7 +174,7 @@ const TransitionModal: React.FC<TransitionModalProps> = ({
                 className="w-full"
                 options={statusList.map((s) => ({
                   value: s.id,
-                  label: s.name,
+                  label: s.name.replace("_", " ").toLocaleUpperCase(),
                 }))}
                 // Không cho chọn trùng From
                 disabled={field.value === fromId}

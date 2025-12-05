@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Modal, Input, Switch } from "antd";
+import { Modal, Input, Switch, Select, Tag } from "antd";
 import { Controller, useForm } from "react-hook-form";
 
 import { StatusSchema, StatusInput } from "@/schemas/workflow.schema";
@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { toast } from "react-toastify";
 
 import FormRow from "../FormRow";
+import { IssueStatus, statusColors, statusThemes } from "@/enums/issue.enum";
 
 // API hooks
 // import { useAddStatus, useEditStatus } from "@/hooks/useStatus";
@@ -83,7 +84,7 @@ const StatusModal: React.FC<StatusModalProps> = ({
 
     const handleAdd = (data: StatusInput) => {
         const newStatus = {
-            id: Math.floor(Math.random() * 1000000000),
+            id: Math.floor(Math.random() * 1000),
             name: data.name,
             color: data.color,
             isInitial: data.is_start ?? false,
@@ -140,23 +141,22 @@ const StatusModal: React.FC<StatusModalProps> = ({
             <form onSubmit={handleSubmit(handleSave)} className="p-5 flex flex-col gap-4">
 
                 {/* Name */}
-                <FormRow label="Name" error={errors.name?.message}>
+                {/* <FormRow label="Name" error={errors.name?.message}>
                     <Controller
                         name="name"
                         control={control}
                         render={({ field }) => <Input {...field} placeholder="Status Name" />}
                     />
-                </FormRow>
+                </FormRow> */}
 
                 {/* Color */}
-                <FormRow label="Color" error={errors.color?.message}>
+                {/* <FormRow label="Color" error={errors.color?.message}>
                     <Controller
                         name="color"
                         control={control}
                         render={({ field }) => (
                             <div className="flex items-center gap-3">
 
-                                {/* Color Picker */}
                                 <input
                                     type="color"
                                     value={field.value}
@@ -164,7 +164,7 @@ const StatusModal: React.FC<StatusModalProps> = ({
                                     className="w-10 h-10 p-0 border rounded cursor-pointer"
                                 />
 
-                                {/* Text Input for HEX */}
+                          
                                 <Input
                                     value={field.value}
                                     onChange={(e) => field.onChange(e.target.value)}
@@ -172,6 +172,23 @@ const StatusModal: React.FC<StatusModalProps> = ({
                                     className="w-32"
                                 />
                             </div>
+                        )}
+                    />
+                </FormRow> */}
+
+                <FormRow label="Status" error={errors.name?.message}>
+                    <Controller
+                        name="name"
+                        control={control}
+                        render={({ field }) => (
+                            <Select {...field} placeholder="Select status" className="w-full">
+                                {Object.values(IssueStatus).map((status) => (
+                                    <Select.Option key={status} value={status}>
+                                        {/* Render Tag with color */}
+                                        <Tag color={statusThemes[status]}>{status.replace("_", " ").toUpperCase()}</Tag>
+                                    </Select.Option>
+                                ))}
+                            </Select>
                         )}
                     />
                 </FormRow>

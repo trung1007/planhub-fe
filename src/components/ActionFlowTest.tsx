@@ -1,5 +1,6 @@
 "use client";
 
+import { IssueStatus, statusColors } from "@/enums/issue.enum";
 import React, { useEffect, useState, useCallback } from "react";
 import ReactFlow, {
   Background,
@@ -23,7 +24,7 @@ import "reactflow/dist/style.css";
 interface StatusItem {
   id: number;
   name: string;
-  color: string;
+  // color: string;
   isInitial: boolean;
   isFinal: boolean;
 }
@@ -57,6 +58,14 @@ const ActionWorkflowDiagram: React.FC<Props> = ({
     const baseY = 150;
     const midY = 300;
     const endY = 450;
+
+    const statusColorMap: { [key: string]: string } = {
+      todo: "#FF5733",
+      in_progress: "#FFBD33",
+      review: "#9C27B0",
+      done: "#4CAF50",
+      cancelled: "#F44336",
+    };
 
     const sortedNodes = [
       ...listStatus.filter((s) => s.isInitial),
@@ -93,19 +102,19 @@ const ActionWorkflowDiagram: React.FC<Props> = ({
       position.push([x, midY]);
     }
 
-    // Tính toán vị trí cho từng node dựa trên mảng `position`
     const nodesArray = sortedNodes.map((s, index) => {
-      const [x, y] = position[index]; // Lấy vị trí từ mảng `position`
+      const [x, y] = position[index]; 
+      const nodeColor = statusColors[s.name as IssueStatus] || "#D3D3D3";
 
       return {
         id: String(s.id),
         position: {
-          x, // Vị trí x được tính toán cho node từ mảng position
-          y, // Vị trí y cho node từ mảng position
+          x,
+          y,
         },
-        data: { label: s.name },
+        data: { label: s.name.replace("_", " ").toLocaleUpperCase()},
         style: {
-          background: s.color,
+          background: nodeColor,
           padding: 10,
           borderRadius: 6,
           color: "#fff",
