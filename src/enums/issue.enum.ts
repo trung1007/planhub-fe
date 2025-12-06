@@ -1,10 +1,10 @@
 export enum IssueStatus {
-  TO_DO = "to_do", // Trạng thái Todo (Chưa làm)
-  IN_PROGRESS = "in_progress", // Trạng thái Đang tiến hành
-  REVIEW = "review", // Trạng thái Đang review
-  DONE = "done", // Trạng thái Đã hoàn thành
-  CANCELLED = "cancelled", // Trạng thái Bị huỷ
-  REOPEN = "reopen", // Trạng thái Backlog (Đang chờ)
+  TO_DO = "to_do", 
+  IN_PROGRESS = "in_progress", 
+  REVIEW = "review", 
+  DONE = "done", 
+  CANCELLED = "cancelled",
+  REOPEN = "reopen",
 }
 
 export const statusColors: Record<IssueStatus, string> = {

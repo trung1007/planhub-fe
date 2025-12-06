@@ -6,7 +6,8 @@ const ButtonGroup = ({
     secondTitle,
     onSecond,
     thirdTitle,
-    onThird
+    onThird,
+    isHideRight
 }: {
     onAdd: () => void;
     title: string;
@@ -14,11 +15,12 @@ const ButtonGroup = ({
     onSecond?: (value?: any) => void;
     thirdTitle?: string;
     onThird?: () => void;
+    isHideRight?: boolean
 }) => {
 
     const handleSecondClick = () => {
         if (secondTitle === "Add to active sprint") {
-            onSecond?.(true);    
+            onSecond?.(true);
         } else {
             onSecond?.();
         }
@@ -51,12 +53,11 @@ const ButtonGroup = ({
                     ))}
                 </div>
 
-                {/* RIGHT BUTTONS */}
-                <div className="flex gap-3">
+                {!isHideRight && (<div className="flex gap-3">
                     <button className="px-3 bg-primary font-semibold text-white">Filter</button>
                     <button className="px-3 bg-primary font-semibold text-white">Sort By</button>
                     <button className="px-3 bg-primary font-semibold text-white">View</button>
-                </div>
+                </div>)}
             </div>
 
 

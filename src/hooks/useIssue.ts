@@ -12,6 +12,7 @@ import {
   getIssueById,
   getIssueHistory,
   getListIssue,
+  getListStatus,
   getSubtasksByIssueId,
 } from "@/services/issue.service";
 
@@ -106,6 +107,10 @@ export const useEditIssue = () => {
       editIssue(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["issues"], exact: false });
+      queryClient.invalidateQueries({
+        queryKey: ["issueDetail"],
+        exact: false,
+      });
       queryClient.invalidateQueries({ queryKey: ["subtasks"], exact: false });
       queryClient.invalidateQueries({
         queryKey: ["issueHistory"],
@@ -147,17 +152,6 @@ export const useAllSubtask = (
   });
 };
 
-// export const useIssueHistory = (issue_id: number) => {
-//   return useQuery({
-//     queryKey: ["issueHistory"],
-//     queryFn: () => getIssueHistory(issue_id),
-//     staleTime: 1000 * 60,
-//     refetchOnWindowFocus: false,
-//     refetchOnReconnect: false,
-//     refetchOnMount: false,
-//   });
-// };
-
 export const useIssueHistory = (
   issueId: number,
   page: number,
@@ -168,5 +162,16 @@ export const useIssueHistory = (
     queryFn: () => getIssueHistory(issueId, page, limit),
     placeholderData: keepPreviousData,
     staleTime: 1000 * 60,
+  });
+};
+
+export const useGetIssueStatus = (sprintId?: number | null) => {
+  return useQuery({
+    queryKey: ["issueStatus", sprintId],
+    queryFn: () => getListStatus(sprintId),
+    enabled: !!sprintId,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
   });
 };

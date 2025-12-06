@@ -24,7 +24,7 @@ import {
 } from "@/schemas/issue.schema";
 
 // Hooks
-import { useAddIssue, useAllIssuesIds, useEditIssue, useListIssue } from "@/hooks/useIssue";
+import { useAddIssue, useAllIssuesIds, useEditIssue, useGetIssueStatus, useListIssue } from "@/hooks/useIssue";
 import { useActiveSprint, useListSprint } from "@/hooks/useSprint";
 
 // UI Tags
@@ -76,6 +76,7 @@ const IssueModal: React.FC<IssueModalProps> = ({
     });
 
     const currentUser = useAppSelector((state) => state.auth.user);
+    const sprintId = watch("sprintId");
 
     const { mutate: mutationAdd, isPending: isAdding } = useAddIssue();
     const { mutate: mutationEdit, isPending: isEditing } = useEditIssue();
@@ -85,8 +86,25 @@ const IssueModal: React.FC<IssueModalProps> = ({
 
     const { data: userList = [], isLoading: loadingUser } = useListUser();
     const { data: activeSprintList = [], isLoading: loadingSprint } = useActiveSprint();
-    // const { data: issueList = [], isLoading: loadingIssue } = useListIssue(isSubtask);
 
+
+    const {
+        data: statusList = [],
+        isLoading: loadingStatus,
+        refetch,
+    } = useGetIssueStatus(sprintId);
+
+
+    useEffect(() => {
+        if (sprintId) {
+            refetch();
+        }
+    }, [sprintId, refetch]);
+
+    useEffect(() => {
+        console.log(statusList);
+
+    }, [statusList])
 
     // Prefill when editing
     useEffect(() => {
@@ -115,6 +133,10 @@ const IssueModal: React.FC<IssueModalProps> = ({
 
     // ADD
     const handleAdd = (data: IssueFormValues) => {
+
+        console.log({ ...data, createdBy: currentUser?.id, parentIssueId: parrentId },);
+
+
         mutationAdd(
             { ...data, createdBy: currentUser?.id, parentIssueId: parrentId },
             {
@@ -205,31 +227,6 @@ const IssueModal: React.FC<IssueModalProps> = ({
                     />
                 </FormRow>
 
-                {/* {watchType === IssueType.SUBTASK && (
-                    <FormRow label="Issue" error={errors.parentIssueId?.message}>
-                        <Controller
-                            name="parentIssueId"
-                            control={control}
-                            render={({ field }) => (
-                                <Select
-                                    {...field}
-                                    allowClear
-                                    value={field.value ?? undefined}
-                                    loading={loadingIssue}
-                                    placeholder="Select issue"
-                                    className="w-full"
-                                    onChange={(v) => field.onChange(v ?? null)}
-                                    options={issueList.map((s: any) => ({
-                                        value: s.id,
-                                        label: s.name,
-                                    }))}
-                                    showSearch
-                                    optionFilterProp="label"
-                                />
-                            )}
-                        />
-                    </FormRow>
-                )} */}
 
                 {/* Sprint */}
                 <FormRow label="Active Sprint" error={errors.sprintId?.message}>
@@ -257,25 +254,29 @@ const IssueModal: React.FC<IssueModalProps> = ({
 
                 {/* Status */}
                 <FormRow label="Status" error={errors.status?.message}>
-                    <Controller
-                        name="status"
-                        control={control}
-                        render={({ field }) => (
-                            <Select
-                                {...field}
-                                allowClear
-                                placeholder="Select status"
-                                className="w-full"
-                                value={field.value ?? undefined}
-                                onChange={(v) => field.onChange(v ?? null)}
-                                options={Object.values(IssueStatus).map((v) => ({
-                                    value: v,
-                                    label: <IssueStatusTag status={v} />,
-                                }))}
-                                optionRender={(option) => option.data.label}
-                            />
-                        )}
-                    />
+                    {watch('sprintId') && statusList ? (
+                        <Controller
+                            name="status"
+                            control={control}
+                            render={({ field }) => (
+                                <Select
+                                    {...field}
+                                    allowClear
+                                    placeholder="Select status"
+                                    className="w-full"
+                                    value={field.value ?? undefined}
+                                    onChange={(v) => field.onChange(v ?? null)}
+                                    options={statusList.map((status: any) => ({
+                                        value: IssueStatus[status.name.toUpperCase() as keyof typeof IssueStatus],
+                                        label: <IssueStatusTag status={status.name} />,
+                                    }))}
+                                    optionRender={(option) => option.data.label}
+                                />
+                            )}
+                        />
+                    ) : (
+                        <span className="text-red-500">Please select sprint</span>
+                    )}
                 </FormRow>
 
                 {/* Priority */}

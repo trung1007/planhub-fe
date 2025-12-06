@@ -157,9 +157,9 @@ const DetailIssue = () => {
                             label="Status"
                             value={issueInfo.status}
                             editType="select"
-                            options={Object.values(IssueStatus).map((v) => ({
-                                value: v,
-                                label: <IssueStatusTag status={v} />,
+                            options={issueInfo?.statusList.map((status: any) => ({
+                                value: IssueStatus[status.name.toUpperCase() as keyof typeof IssueStatus],
+                                label: <IssueStatusTag status={status.name} />,
                             }))}
                             renderValue={() => <IssueStatusTag status={issueInfo.status} />}
                             issueId={issueIdNumber}

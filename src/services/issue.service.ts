@@ -68,3 +68,8 @@ export const getIssueHistory = async (
   });
   return response.data;
 };
+
+export const getListStatus = async (id?: number | null) => {
+  const response = await api.get(`/core-service/status/sprint/${id}`);
+  return response.data;
+};
