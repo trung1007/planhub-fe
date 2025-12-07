@@ -19,6 +19,12 @@ export const getListSprint = async () => {
   return response.data;
 };
 
+export const getListActiveSprintByProjectId = async (projectId?: number | null) => {
+  const response = await api.get(`/core-service/sprints/active-sprints/${projectId}`);
+  return response.data;
+};
+
+
 export const getListActiveSprint = async () => {
   const response = await api.get(`/core-service/sprints/active-sprints`);
   return response.data;

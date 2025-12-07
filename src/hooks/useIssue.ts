@@ -12,6 +12,7 @@ import {
   getIssueById,
   getIssueHistory,
   getListIssue,
+  getListIssueScrum,
   getListStatus,
   getSubtasksByIssueId,
 } from "@/services/issue.service";
@@ -56,6 +57,17 @@ export const useListIssue = (enabled: boolean = true) => {
   });
 };
 
+export const useListIssueScrum = () => {
+  return useQuery({
+    queryKey: ["listIssuesScrum"],
+    queryFn: () => getListIssueScrum(),
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: true,
+  });
+};
+
 export const useAddIssue = () => {
   const queryClient = useQueryClient();
 
@@ -63,6 +75,11 @@ export const useAddIssue = () => {
     mutationFn: (data: IssueFormValues) => createIssue(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["issues"], exact: false });
+      queryClient.invalidateQueries({
+        queryKey: ["listIssuesScrum"],
+        exact: false,
+      });
+
       queryClient.invalidateQueries({ queryKey: ["subtasks"], exact: false });
       queryClient.invalidateQueries({
         queryKey: ["issueHistory"],
@@ -79,6 +96,10 @@ export const useAssignIssueToSprint = () => {
     mutationFn: (issueId: number) => assignIssueToSprint(issueId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["issues"], exact: false });
+      queryClient.invalidateQueries({
+        queryKey: ["listIssuesScrum"],
+        exact: false,
+      });
       queryClient.invalidateQueries({ queryKey: ["subtasks"], exact: false });
       queryClient.invalidateQueries({
         queryKey: ["issueHistory"],
@@ -108,6 +129,10 @@ export const useEditIssue = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["issues"], exact: false });
       queryClient.invalidateQueries({
+        queryKey: ["listIssuesScrum"],
+        exact: false,
+      });
+      queryClient.invalidateQueries({
         queryKey: ["issueDetail"],
         exact: false,
       });
@@ -127,6 +152,10 @@ export const useDeleteIssue = () => {
     mutationFn: (id: number) => deleteIssue(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["issues"], exact: false });
+      queryClient.invalidateQueries({
+        queryKey: ["listIssuesScrum"],
+        exact: false,
+      });
       queryClient.invalidateQueries({ queryKey: ["subtasks"], exact: false });
       queryClient.invalidateQueries({
         queryKey: ["issueHistory"],

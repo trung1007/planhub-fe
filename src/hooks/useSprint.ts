@@ -5,6 +5,7 @@ import {
   editSprint,
   getAllSprint,
   getListActiveSprint,
+  getListActiveSprintByProjectId,
   getListSprint,
 } from "@/services/sprint.service";
 import {
@@ -49,6 +50,17 @@ export const useListSprint = () => {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false,
+  });
+};
+
+export const useActiveSprintByProject = (projectId?: number | null) => {
+  return useQuery({
+    queryKey: ["activeSprintsByProject"],
+    queryFn: () => getListActiveSprintByProjectId(projectId),
+    enabled: !!projectId,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: true,
   });
 };
 

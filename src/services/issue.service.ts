@@ -53,6 +53,11 @@ export const getAllIssueIds = async () => {
   return response.data;
 };
 
+export const getListIssueScrum = async () => {
+  const response = await api.get(`/core-service/issues/scrum`);
+  return response.data;
+};
+
 export const getListIssue = async () => {
   const response = await api.get(`/core-service/issues/issue-list`);
   return response.data;

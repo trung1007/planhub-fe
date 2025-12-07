@@ -101,10 +101,6 @@ const IssueModal: React.FC<IssueModalProps> = ({
         }
     }, [sprintId, refetch]);
 
-    useEffect(() => {
-        console.log(statusList);
-
-    }, [statusList])
 
     // Prefill when editing
     useEffect(() => {

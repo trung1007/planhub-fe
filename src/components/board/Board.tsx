@@ -12,95 +12,76 @@ import {
 } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { Column } from './Column'; // Giả sử Column là component cột của bạn
-import { Task, Column as ColumnType } from './types'; // Giả sử Task là kiểu công việc của bạn
+import { Task, Column as ColumnType, Issue } from './types'; // Giả sử Task là kiểu công việc của bạn
 
 import { toast } from "react-toastify";
+import { useEditIssue } from "@/hooks/useIssue";
+import { Spin } from "antd";
 
 
 interface Tasks {
-    [key: string]: Task[];
+    [key: string]: Issue[];
 }
 
 
-const STATUS_COLUMN = [
-    { id: '28', title: 'to_do' },
-    { id: '29', title: 'in_progress' },
-    { id: '31', title: 'review' },
-    { id: '30', title: 'done' },
-]
+const DragableBoard = ({ issues, workflow }: {
+    issues: any[],
+    workflow: any
+}) => {
 
 
-const TRANSITION = [
-    { id: '17', from_id: '28', to_id: '29' },
-    { id: '18', from_id: '29', to_id: '30' },
-    { id: '19', from_id: '29', to_id: '31' },
-    { id: '20', from_id: '31', to_id: '30' },
-    { id: '20', from_id: '31', to_id: '29' }
+    const [statusColumn, setStatusColumn] = useState<{ id: number; title: string, name: string }[] | undefined>(undefined)
+    const [transitionStatus, setTransitionStatus] = useState<{ id: number; from_id: number, to_id: number }[] | undefined>(undefined)
 
-]
+    const [tasks, setTasks] = useState<Tasks>({});
 
-const INITIAL_TASKS: any[] = [
-    {
-        id: '1',
-        status_id: '28',
-        title: 'Research Project',
-        description: 'Gather requirements and create initial documentation',
-    },
-    {
-        id: '2',
-        status_id: '28',
-        title: 'Design System',
-        description: 'Create component library and design tokens',
-    },
-    {
-        id: '3',
-        status_id: '29',
-        title: 'API Integration',
-        description: 'Implement REST API endpoints',
-    },
-    {
-        id: '4',
-        status_id: '30',
-        title: 'Testing',
-        description: 'Write unit tests for core functionality',
-    },
-];
 
-const createColumnFirstCollision =
-    (validStatuses: any[]): CollisionDetection =>
-        (args) => {
-            // Get all collisions
-            const collisions = rectIntersection(args)
-            // Prefer collisions with column droppables (ids are status keys)
-            const columnCollisions = collisions.filter((c) =>
-                validStatuses.includes(c.id)
-            )
-            if (columnCollisions.length > 0) return columnCollisions
-            // Fallback to default behavior for item-level sorting
-            return closestCorners(args)
+    const { mutate: mutationEdit, isPending: isEditingStatus } = useEditIssue()
+
+    useEffect(() => {
+        if (workflow) {
+            const sortedStatus = workflow.status.sort((a: any, b: any) => {
+                if (a.isInit && !b.isInit) return -1;
+                if (!a.isInit && b.isInit) return 1;
+                if (!a.isFinal && b.isFinal) return -1;
+                if (a.isFinal && !b.isFinal) return 1;
+                return 0;
+            });
+            const STATUS_COLUMN = sortedStatus.map((status: any) => ({
+                id: status.id,
+                name: status.name,
+                title: status.name
+                    .replace(/_/g, ' ')
+                    .split(' ')
+                    .map((word: any) => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ')
+            }));
+
+            const STATUS_TRANSITION = workflow?.transition.map((transition: any) => ({
+                id: transition.id,
+                from_id: transition.statusIdFrom,
+                to_id: transition.statusIdTo
+            }))
+
+            const categorizedTasks: Tasks = {};
+
+            const ISSUE_ITEM = issues?.map((issue: any) => ({
+                ...issue,
+                status_id: STATUS_COLUMN?.find((status: any) => status.name === issue.status)?.id,
+            }))
+
+            setStatusColumn(STATUS_COLUMN)
+
+            setTransitionStatus(STATUS_TRANSITION)
+
+            STATUS_COLUMN.forEach((status: any) => {
+                categorizedTasks[status.name] = ISSUE_ITEM.filter((task) => task.status_id === status.id);
+            });
+
+            setTasks(categorizedTasks);
         }
+    }, [workflow, issues])
 
-
-const validStatuses = STATUS_COLUMN.map((c) => c.title)
-const collisionDetection = createColumnFirstCollision(validStatuses)
-
-function canMove(from: string, to: string) {
-
-    const from_id = STATUS_COLUMN.find((status) => status.title === from)?.id;
-    const to_id = STATUS_COLUMN.find((status) => status.title === to)?.id
-
-    return TRANSITION.some((transition) => transition.from_id === from_id && transition.to_id === to_id);
-}
-
-export default function DragableBoard() {
-
-
-    const [tasks, setTasks] = useState<Tasks>({
-        to_do: INITIAL_TASKS.filter((task) => task.status_id === '28'),
-        in_progress: INITIAL_TASKS.filter((task) => task.status_id === '29'),
-        done: INITIAL_TASKS.filter((task) => task.status_id === '30'),
-        review: INITIAL_TASKS.filter((task) => task.status_id === '31'),
-    });
 
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -108,44 +89,52 @@ export default function DragableBoard() {
             coordinateGetter: sortableKeyboardCoordinates,
         })
     );
-    return (
-        <div className="flex flex-row">
-            <DndContext
-                sensors={sensors}
-                collisionDetection={collisionDetection}
-                onDragStart={handleDragStart}
-                onDragEnd={handleDragEnd}
-            >
-                {STATUS_COLUMN.map((column) => (
-                    <Column
-                        key={column.id}
-                        column={column}
-                        tasks={tasks[column.title]}
-                    />
-                ))}
-            </DndContext>
-        </div>
-    );
 
-    function findActiveContainer(id: string) {
+    const createColumnFirstCollision = (validStatuses: any[] | undefined): CollisionDetection => (args) => {
+        const collisions = rectIntersection(args);
+
+        if (validStatuses) {
+            const columnCollisions = collisions.filter((c) =>
+                validStatuses.includes(c.id)
+            );
+
+            if (columnCollisions.length > 0) return columnCollisions;
+        }
+        return closestCorners(args);
+    };
+
+
+    const validStatuses = statusColumn?.map((c) => c.name)
+    const collisionDetection = createColumnFirstCollision(validStatuses)
+
+    function canMove(from: string, to: string) {
+        const from_id = statusColumn?.find((status) => status.name === from)?.id;
+        const to_id = statusColumn?.find((status) => status.name === to)?.id
+
+        if (transitionStatus) {
+            return transitionStatus.some((transition) => Number(transition.from_id) === from_id && Number(transition.to_id) === to_id);
+
+        }
+        return false
+    }
+
+    function findActiveContainer(id: number) {
         for (let container in tasks) {
             const task = tasks[container].find((task) => task.id === id);
             if (task) {
-                const column = STATUS_COLUMN.find((column) => column.id === task.status_id);
-                return column ? column.title : null;
+                const column = statusColumn?.find((column) => column.id === task.status_id);
+                return column ? column.name : null;
             }
         }
         return null;
     }
 
-    function findOVerContainer(id: string) {
-        const column = STATUS_COLUMN.find(column => column.id === id);
+    function findOVerContainer(id: number) {
+        const column = statusColumn?.find(column => column.id === id);
 
-        return column ? column.title : null;
+        return column ? column.name : null;
 
     }
-
-
     // Khi kéo bắt đầu
     function handleDragStart(event: any) {
         const { active } = event;
@@ -163,9 +152,11 @@ export default function DragableBoard() {
         const activeContainer = findActiveContainer(id);
         const overContainer = findOVerContainer(overId);
 
+
         if (!activeContainer || !overContainer || activeContainer === overContainer) {
             return;
         }
+
 
         if (!canMove(activeContainer, overContainer)) {
             toast.warn("Wrong workflow process")
@@ -178,22 +169,56 @@ export default function DragableBoard() {
         if (activeIndex !== -1) {
             const movedTask = tasks[activeContainer][activeIndex];
 
-            const updatedTasks = {
-                ...tasks,
-                [activeContainer]: tasks[activeContainer].filter((task) => task.id !== id),
-                [overContainer]: overIndex !== -1
-                    ? [
-                        ...tasks[overContainer],
-                        { ...movedTask, status_id: overId },
-                    ]
-                    : [
-                        { ...movedTask, status_id: overId },
-                    ],
-            };
-            // Gọi hàm update issue ở đây 
-            setTasks(updatedTasks);
-            toast.success("Update issue status successfully")
-        }
+            mutationEdit({
+                id: movedTask.id, data: {
+                    status: overContainer
+                }
+            }, {
+                onSuccess: () => {
+                    const updatedTasks = {
+                        ...tasks,
+                        [activeContainer]: tasks[activeContainer].filter((task) => task.id !== id),
+                        [overContainer]: overIndex !== -1
+                            ? [
+                                ...tasks[overContainer],
+                                { ...movedTask, status_id: overId },
+                            ]
+                            : [
+                                { ...movedTask, status_id: overId },
+                            ],
+                    };
+                    setTasks(updatedTasks);
+                    toast.success("Update issue status successfully")
+                },
+                onError: () => {
+                    toast.error("Update issue status failed")
+                }
+            })
 
+
+        }
     }
+
+    return (
+        <div className="flex flex-row">
+            <DndContext
+                sensors={sensors}
+                collisionDetection={collisionDetection}
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
+            >
+                {statusColumn && statusColumn?.map((column) => (
+                    <Column
+                        key={column.id}
+                        column={column}
+                        tasks={tasks[column.name]}
+                    />
+                ))}
+            </DndContext>
+        </div>
+    );
+
 }
+
+
+export default DragableBoard

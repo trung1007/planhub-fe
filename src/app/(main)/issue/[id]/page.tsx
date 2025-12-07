@@ -12,7 +12,7 @@ import { IssueStatusTag } from "@/components/tag/IssueStatusTag";
 import CommentActivity from "@/components/CommentActivity";
 import SubTaskIssue from "@/components/SubtaskIssue";
 import { useListUser } from "@/hooks/useUser";
-import { useActiveSprint, useListSprint } from "@/hooks/useSprint";
+import { useActiveSprint, useActiveSprintByProject, useListSprint } from "@/hooks/useSprint";
 import { InfoRowEditable } from "@/components/InfoRowEditable";
 import { IssuePriority, IssueStatus, IssueType, TagEnum } from "@/enums/issue.enum";
 import { Tag } from "antd";
@@ -22,7 +22,20 @@ const DetailIssue = () => {
     const [issueIdNumber, setIssueIdNumber] = useState<number | undefined>(undefined);
 
     const { data: userList = [], isLoading: loadingUser } = useListUser();
-    const { data: activeSprintList = [], isLoading: loadingSprint } = useActiveSprint();
+    // const { data: activeSprintList = [], isLoading: loadingSprint } = useActiveSprint();
+    const { data: issueInfo, isLoading } = useGetDetailIssue(issueIdNumber ?? 0)
+
+    const {
+        data: activeSprintList = [],
+        isLoading: loadingSprint,
+        refetch,
+    } = useActiveSprintByProject(issueInfo?.projectId);
+
+    useEffect(() => {
+        if (issueInfo?.projectId) {
+            refetch();
+        }
+    }, [issueInfo, refetch]);
 
     useEffect(() => {
         if (pathname) {
@@ -36,7 +49,7 @@ const DetailIssue = () => {
         }
     }, [pathname]);
 
-    const { data: issueInfo, isLoading } = useGetDetailIssue(issueIdNumber ?? 0)
+
 
     if (issueIdNumber === undefined) {
         return <div>Loading...</div>;
@@ -50,6 +63,8 @@ const DetailIssue = () => {
     if (!issueInfo) {
         return <div>Issue not found.</div>;
     }
+
+
 
     const createdInfor = {
         username: issueInfo.createdUser,
