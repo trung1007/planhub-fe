@@ -9,6 +9,10 @@ export interface User {
   // ... thêm nếu cần
 }
 
+export interface Role{
+  
+}
+
 interface AuthState {
   user: User | null;
   access_token: string | null;

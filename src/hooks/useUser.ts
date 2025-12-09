@@ -16,7 +16,7 @@ import {
 import { useAppDispatch } from "./reduxHook";
 import { updateUserState } from "@/stores/auth/authSlice";
 import { RegisterInput } from "@/schemas/user.schema";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export const useAllUser = (page: number = 1, limit: number = 10) => {
   return useQuery({

@@ -3,7 +3,6 @@
 import { useDroppable } from '@dnd-kit/core';
 import { TaskCard } from './TaskCard';
 import { Column as ColumnType, Issue, Task } from './types';
-import { useEffect } from 'react';
 
 type ColumnProps = {
   column: ColumnType;  // column có kiểu Column, không phải kiểu có id là number
@@ -15,11 +14,8 @@ export function Column({ column, tasks = [] }: ColumnProps) {
     id: column.id,
   });
 
-
-
-
   return (
-    <div className="flex w-full flex-col bg-white border">
+    <div className="flex w-full flex-col bg-white border min-w-50">
       <h2 className="text-center font-semibold p-4 text-black bg-background border-b">{column.title}</h2>
       <div ref={setNodeRef} className="flex flex-1 p-2 gap-1 flex-col bg-background">
         {tasks && tasks.map((task) => (

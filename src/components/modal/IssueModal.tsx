@@ -129,10 +129,6 @@ const IssueModal: React.FC<IssueModalProps> = ({
 
     // ADD
     const handleAdd = (data: IssueFormValues) => {
-
-        console.log({ ...data, createdBy: currentUser?.id, parentIssueId: parrentId },);
-
-
         mutationAdd(
             { ...data, createdBy: currentUser?.id, parentIssueId: parrentId },
             {

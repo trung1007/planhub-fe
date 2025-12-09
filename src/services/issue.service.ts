@@ -28,7 +28,15 @@ export const getIssueById = async (id: number) => {
 };
 
 export const editIssue = async (id: number, data: IssueFormValues) => {
-  const response = await api.patch(`/core-service/issues/${id}`, data);
+  const response = await api.patch(
+    `/core-service/issues/${id}`,
+    data,
+    // {
+    //   headers: {
+    //     sprintId: data.sprintId,
+    //   },
+    // }
+  );
   return response.data;
 };
 

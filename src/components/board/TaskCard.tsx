@@ -87,6 +87,28 @@ export function TaskCard({ task }: TaskCardProps) {
             </div>
           </div>
         </div>
+        {/* <div className="flex items-center justify-between gap-2 w-full">
+       
+          <div className="flex items-center gap-1 min-w-0 flex-1">
+            <IssueTypeTag type={task.type} />
+            <span className="truncate font-medium">
+              {task.name}
+            </span>
+          </div>
+
+     
+          <div className="flex gap-2 shrink-0 whitespace-nowrap max-md:hidden">
+            <div className="flex gap-1 items-center opacity-50">
+              <MdOutlinePushPin /> {task.numOfAttachment}
+            </div>
+            <div className="flex gap-1 items-center opacity-50">
+              <IoDocumentTextOutline /> {task.numOfSubtask}
+            </div>
+            <div className="flex gap-1 items-center opacity-50">
+              <FaRegComment /> {task.numOfComment}
+            </div>
+          </div>
+        </div> */}
       </div>
 
     </div>

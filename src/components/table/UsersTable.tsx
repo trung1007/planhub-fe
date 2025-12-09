@@ -115,7 +115,6 @@ const UsersTable = () => {
   };
 
   const handleDelete = (record: any) => {
-    console.log("Delete user:", record);
     mutate(record.id, {
       onSuccess: () => {
         toast.success("Delete user successful");

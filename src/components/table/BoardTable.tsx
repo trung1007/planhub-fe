@@ -19,8 +19,9 @@ const BoardTable = () => {
 
             {/* Render DragableBoard for each project */}
             {issueScrumList && issueScrumList.length > 0 ? (
-                issueScrumList.map((scrum: any) => (
+                issueScrumList.map((scrum: any, index: number) => (
                     <DragableTable
+                        index={index}
                         project={scrum.project}
                         issues={scrum.issues}
                         workflow={scrum.workflow} />

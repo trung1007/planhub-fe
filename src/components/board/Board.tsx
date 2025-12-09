@@ -200,20 +200,32 @@ const DragableBoard = ({ issues, workflow }: {
     }
 
     return (
-        <div className="flex flex-row">
+        <div className="w-full overflow-auto">
             <DndContext
                 sensors={sensors}
                 collisionDetection={collisionDetection}
                 onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
             >
-                {statusColumn && statusColumn?.map((column) => (
-                    <Column
-                        key={column.id}
-                        column={column}
-                        tasks={tasks[column.name]}
-                    />
-                ))}
+                {/* <div className="flex flex-row gap-4">
+                    {statusColumn?.map((column) => (
+                        <Column
+                            key={column.id}
+                            column={column}
+                            tasks={tasks[column.name]}
+                        />
+                    ))}
+                </div> */}
+                <div className=" flex overflow-auto">
+                    {statusColumn?.map((column) => (
+                        <Column
+                            key={column.id}
+                            column={column}
+                            tasks={tasks[column.name]}
+                        />
+                    ))}
+                </div>
+
             </DndContext>
         </div>
     );
