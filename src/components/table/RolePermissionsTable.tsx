@@ -129,7 +129,7 @@ const RolePermissionsTable = ({ role }: { role: any }) => {
                 title={
                     permissionToRemove.length > 0
                         ? `Remove ${permissionToRemove.length} permissions from this role`
-                        : `Add to this role`
+                        : `Remove from this role`
                 }
             />
 

@@ -1,6 +1,7 @@
 import {
   addUser,
   changePassword,
+  deleteUser,
   getAllUser,
   getListUser,
   getUserById,
@@ -79,5 +80,17 @@ export const useUpdateUser = () => {
 export const useChangePassword = () => {
   return useMutation({
     mutationFn: ({ id, data }: any) => changePassword(id, data),
+  });
+};
+
+export const useDeleteUser = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: number) => deleteUser(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["allUsers"] });
+      queryClient.invalidateQueries({ queryKey: ["listUsers"] });
+    },
   });
 };

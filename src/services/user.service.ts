@@ -66,3 +66,9 @@ export const resetPassword = async (data: any) => {
   const response = await api.post(`/auth/reset-password`, data);
   return response.data;
 };
+
+
+export const deleteUser = async (id: number) => {
+  const response = await api.delete(`/user-service/users/${id}`);
+  return response.data;
+};
