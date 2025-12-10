@@ -56,7 +56,6 @@ const UserPage = () => {
       return;
     }
     if (isChangePassword) {
-      console.log("xử lý đổi mật khẩu");
       const payload: any = {
         currentPassword: formData.currentPassword,
         newPassword: formData.newPassword,
@@ -65,7 +64,7 @@ const UserPage = () => {
         { id: user.id, data: payload },
         {
           onSuccess: () => {
-            toast.success("Đổi mật khẩu thành công");
+            toast.success("Change password succesfully");
             setChangePassword(false);
 
             // clear field mật khẩu
@@ -148,9 +147,9 @@ const UserPage = () => {
               setChangePassword(false);
               setIsEditing(true);
             }}
-            className="w-full py-2 mb-4 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
+            className="w-full py-2 mb-4 bg-primary hover:bg-second text-white rounded-md"
           >
-            Chỉnh sửa thông tin
+            Edit user infomation
           </button>
         )}
 
@@ -224,20 +223,20 @@ const UserPage = () => {
                 setChangePassword(true);
                 setIsEditing(false);
               }}
-              className="w-full py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-md mt-2"
+              className="w-full py-2 bg-primary hover:bg-second text-white rounded-md mt-2"
             >
-              Đổi mật khẩu
+              Change password
             </button>
           )}
 
           {/* FORM ĐỔI MẬT KHẨU */}
           {isChangePassword && (
             <div className="space-y-3 mt-4 p-4 border rounded-lg bg-gray-50">
-              <h3 className="font-semibold text-lg mb-2">Đổi mật khẩu</h3>
+              <h3 className="font-semibold text-lg mb-2">Change password</h3>
 
               <div>
                 <label className="block mb-1 font-medium">
-                  Mật khẩu hiện tại
+                  Current password
                 </label>
                 <input
                   type="password"
@@ -247,7 +246,7 @@ const UserPage = () => {
               </div>
 
               <div>
-                <label className="block mb-1 font-medium">Mật khẩu mới</label>
+                <label className="block mb-1 font-medium">New password</label>
                 <input
                   type="password"
                   {...register("newPassword")}
@@ -257,7 +256,7 @@ const UserPage = () => {
 
               <div>
                 <label className="block mb-1 font-medium">
-                  Xác nhận mật khẩu
+                  Confirm password
                 </label>
                 <input
                   type="password"
@@ -302,13 +301,13 @@ const UserPage = () => {
                 }}
                 className="flex-1 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded-md"
               >
-                Hủy
+                Cancel
               </button>
               <button
                 type="submit"
-                className="flex-1 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md"
+                className="flex-1 py-2 bg-primary hover:bg-second text-white rounded-md"
               >
-                Lưu
+                Save
               </button>
             </div>
           )}

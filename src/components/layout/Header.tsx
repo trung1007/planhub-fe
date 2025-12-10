@@ -88,10 +88,10 @@ const Header = () => {
                             <div className="absolute right-0 mt-2 w-50 bg-white shadow-lg rounded-md p-3 text-gray-700 z-50 ">
                                 <p className="text-[16px] font-semibold truncate ">{user?.username}</p>
                                 <p className=" text-[16px]  text-gray-500 truncate">{user?.email}</p>
-                                <i className="text-[12px]  text-gray-500 cursor-pointer hover:underline" onClick={goToUserDetail}>Đổi mật khẩu</i>
+                                <i className="text-[12px]  text-gray-500 cursor-pointer hover:underline" onClick={goToUserDetail}>Change password</i>
 
                                 <button onClick={handleLogout} disabled={isPending} className="w-full bg-second text-white py-1 mt-3 rounded hover:bg-primary">
-                                    {isPending ? "Đang đăng xuất..." : "Đăng xuất"}
+                                    {isPending ? "Loging out..." : "Log out"}
                                 </button>
                             </div>
                         )}

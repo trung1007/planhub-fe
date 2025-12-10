@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import IssueModal from "../modal/IssueModal";
 
-const SubTaskTable = ({ issueId }: { issueId: number }) => {
+const SubTaskTable = ({ issueId, parrentSprintId }: { issueId: number, parrentSprintId?:number }) => {
     const limit = 10;
     const [page, setPage] = useState(1);
     const router = useRouter()
@@ -172,8 +172,8 @@ const SubTaskTable = ({ issueId }: { issueId: number }) => {
                 }}
                 scroll={{ x: true }}
             />
-            {openAdd && <IssueModal open={openAdd} setOpen={setOpenAdd} mode="add" parrentId={issueId} />}
-            {openEdit && <IssueModal open={openEdit} setOpen={setOpenEdit} mode="edit" selectedIssue={selectedIssue} />}
+            {openAdd && <IssueModal open={openAdd} setOpen={setOpenAdd} mode="add" parrentId={issueId} parrentSprintId={parrentSprintId} />}
+            {openEdit && <IssueModal open={openEdit} setOpen={setOpenEdit} mode="edit" selectedIssue={selectedIssue} parrentSprintId={parrentSprintId} />}
         </div>
     );
 };

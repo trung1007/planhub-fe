@@ -40,6 +40,7 @@ interface IssueModalProps {
     selectedIssue?: IssueFormValues & { id: number };
     isLoading?: boolean;
     parrentId?: number
+    parrentSprintId?: number
 }
 
 const IssueModal: React.FC<IssueModalProps> = ({
@@ -48,13 +49,15 @@ const IssueModal: React.FC<IssueModalProps> = ({
     mode,
     selectedIssue,
     isLoading,
-    parrentId
+    parrentId,
+    parrentSprintId
 }) => {
 
     const {
         handleSubmit,
         control,
         reset,
+        setValue,
         formState: { errors },
         watch
     } = useForm<IssueFormValues>({
@@ -118,7 +121,7 @@ const IssueModal: React.FC<IssueModalProps> = ({
                 status: undefined,
                 priority: undefined,
                 tags: [],
-                sprintId: undefined,
+                sprintId: parrentSprintId || undefined,
                 assigneeId: undefined,
                 reporterId: undefined,
                 parentIssueId: undefined,
@@ -225,6 +228,7 @@ const IssueModal: React.FC<IssueModalProps> = ({
                     <Controller
                         name="sprintId"
                         control={control}
+                        disabled={!!parrentSprintId}
                         render={({ field }) => (
                             <Select
                                 {...field}

@@ -66,7 +66,7 @@ const ProjectTable = () => {
                         <FaEdit />
                     </Button>
                     <Popconfirm
-                        title="This will delete anything related. Delete this project?."
+                        title="This will delete anything related. Delete this project?"
                         onConfirm={() => handleDelete(record)}
                         okText="Yes"
                         cancelText="No"
