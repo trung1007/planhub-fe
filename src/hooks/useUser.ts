@@ -69,10 +69,11 @@ export const useUpdateUser = () => {
     mutationFn: ({ id, data }: any) => updateUser(id, data),
     onSuccess: (updatedUser) => {
       // updatedUser là object User backend trả về
-      dispatch(updateUserState(updatedUser));
       if (!pathname.includes("user")) {
         queryClient.invalidateQueries({ queryKey: ["allUsers"] });
         queryClient.invalidateQueries({ queryKey: ["listUsers"] });
+      } else {
+        dispatch(updateUserState(updatedUser));
       }
     },
   });

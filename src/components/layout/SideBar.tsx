@@ -14,7 +14,7 @@ import { GoWorkflow } from "react-icons/go";
 export interface MenuItem {
     label: string;
     href: string;
-    icon: React.ReactNode;
+    icon?: React.ReactNode;
 }
 export const menuItems = [
     // { label: "Issue", icon: <FaArchive size={20} />, href: "/" },

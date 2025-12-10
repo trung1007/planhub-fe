@@ -69,6 +69,14 @@ export const useDeleteProject = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
       queryClient.invalidateQueries({ queryKey: ["listProjects"] });
+      queryClient.invalidateQueries({ queryKey: ["releases"] });
+      queryClient.invalidateQueries({ queryKey: ["listReleases"] });
+      queryClient.invalidateQueries({ queryKey: ["workflows"], exact: false });
+      queryClient.invalidateQueries({ queryKey: ["sprints"] });
+      queryClient.invalidateQueries({ queryKey: ["listSprints"] });
+      queryClient.invalidateQueries({ queryKey: ["activeSprints"] });
+      queryClient.invalidateQueries({ queryKey: ["issues"] });
+      queryClient.invalidateQueries({ queryKey: ["project-members"] });
     },
   });
 };

@@ -8,10 +8,12 @@ import AddUserModal from "../modal/AddUserModal";
 import EditUserModal from "../modal/EditUserModal";
 import ButtonGroup from "../ButtonGroupTable";
 import { toast } from "react-toastify";
+import { useAppSelector } from "@/hooks/reduxHook";
 
 const UsersTable = () => {
   const limit = 10;
   const [page, setPage] = useState(1);
+  const currentUser = useAppSelector((state) => state.auth.user);
   const columns: ColumnsType<any> = [
     {
       title: "No",
@@ -48,10 +50,12 @@ const UsersTable = () => {
       title: "Email",
       dataIndex: "email",
       key: "email",
-      ellipsis: true,
+      // ellipsis: true,
       width: 180,
       render: (value: string) => (
         <span className="email-ellipsis">{value}</span>
+        // <span>{value}</span>
+
       ),
     },
 
@@ -86,7 +90,19 @@ const UsersTable = () => {
           >
             <FaEdit />
           </Button>
-          <Popconfirm
+          {canDelete(record) && (
+            <Popconfirm
+              title="Delete this user?"
+              onConfirm={() => handleDelete(record)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button danger size="small">
+                <FaTrash />
+              </Button>
+            </Popconfirm>
+          )}
+          {/* <Popconfirm
             title="Delete this user?"
             onConfirm={() => handleDelete(record)}
             okText="Yes"
@@ -95,7 +111,7 @@ const UsersTable = () => {
             <Button danger size="small">
               <FaTrash />
             </Button>
-          </Popconfirm>
+          </Popconfirm> */}
         </div>
       ),
     },
@@ -106,6 +122,14 @@ const UsersTable = () => {
 
   const [openEdit, setOpenEdit] = useState(false);
   const [selectedUser, setSelectedUser] = useState<any>(null);
+
+  const canDelete = (record: any) => {
+    if (record.id !== currentUser?.id) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   const { mutate, isPending: isDeleting } = useDeleteUser();
 

@@ -56,7 +56,7 @@ body,
 
 .email-ellipsis {
   display: inline-block;
-  max-width: 15ch;
+  max-width: 25ch;
   /* tương đương 15 ký tự */
   white-space: nowrap;
   overflow: hidden;

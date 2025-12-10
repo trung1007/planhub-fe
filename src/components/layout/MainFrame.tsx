@@ -14,9 +14,18 @@ const MainFrame = ({ children }: MainFrameProps) => {
     const [activeMenu, setActiveMenu] = useState<MenuItem | null>(null);
 
     useEffect(() => {
+
+        if(pathname === '/user'){
+            const userDetailPath:MenuItem = {
+                label:'User',
+                href:'/user'
+            }
+            setActiveMenu(userDetailPath)
+            return
+        }
+
         let path = pathname;
 
-        // Trường hợp đặc biệt: "/" xem như "/issue"
         if (pathname === "/") {
             path = "/issue";
         }
@@ -33,6 +42,7 @@ const MainFrame = ({ children }: MainFrameProps) => {
             {children}
         </div>
     );
+  
     return (
         <div className="px-6 py-3 flex-1 w-full h-full min-h-0 bg-background flex flex-col ">
             <BreadCrumb
