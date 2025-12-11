@@ -4,6 +4,7 @@ import { Select } from "antd";
 import { useEditIssue } from "@/hooks/useIssue";
 import { toast } from "react-toastify";
 import TextArea from "antd/es/input/TextArea";
+import Cookies from "js-cookie";
 
 export interface InfoRowEditableProps<T = any> {
     mode?: "multiple" | "tags";
@@ -17,6 +18,7 @@ export interface InfoRowEditableProps<T = any> {
     renderValue?: (value: T) => React.ReactNode;
     currentIssueValue: any,
     issueId: number,
+    projectId?:number,
     property: string,
 }
 
@@ -28,6 +30,7 @@ export function InfoRowEditable<T = any>({
     options = [],
     renderValue,
     issueId,
+    projectId,
     currentIssueValue,
     property
 }: InfoRowEditableProps<T>) {
@@ -37,13 +40,10 @@ export function InfoRowEditable<T = any>({
     const { mutate: mutationEdit, isPending: isEditingField } = useEditIssue()
 
     const handleSave = (newValue: T) => {
-        // const payload = {
-        //     ...currentIssueValue,
-        //     [property]: newValue
-        // }
         const payload = { [property]: newValue };
-        console.log(payload);
-        
+        if(projectId){
+            Cookies.set('action_project_id', projectId.toString())
+        }
         mutationEdit({ id: issueId, data: payload }, {
             onSuccess: () => {
                 toast.success("Issue updated successfully!");

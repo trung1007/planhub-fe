@@ -40,6 +40,7 @@ import { IssueStatusTag } from "../tag/IssueStatusTag";
 import { IssuePriorityTag } from "../tag/IssuePriorityTag";
 import { IssueTagList } from "../tag/IssueTagList";
 import { useListProject } from "@/hooks/useProject";
+import Cookies from "js-cookie";
 
 interface IssueModalProps {
   open: boolean;
@@ -77,7 +78,6 @@ const IssueModal: React.FC<IssueModalProps> = ({
       status: undefined,
       priority: undefined,
       tags: [],
-      projectId: undefined,
       sprintId: undefined,
       assigneeId: undefined,
       reporterId: undefined,
@@ -87,7 +87,7 @@ const IssueModal: React.FC<IssueModalProps> = ({
   });
 
   const currentUser = useAppSelector((state) => state.auth.user);
-  const projectId = watch("projectId");
+  // const projectId = watch("projectId");
   const sprintId = watch("sprintId");
 
   const { mutate: mutationAdd, isPending: isAdding } = useAddIssue();
@@ -95,10 +95,9 @@ const IssueModal: React.FC<IssueModalProps> = ({
 
   // const watchType = watch("type");
   // const isSubtask = watchType === IssueType.SUBTASK;
-  const { data: projectList, isLoading: loadingProject } = useListProject();
   const { data: userList = [], isLoading: loadingUser } = useListUser();
-  //   const { data: activeSprintList = [], isLoading: loadingSprint } =
-  //     useActiveSprint();
+  const { data: activeSprintList = [], isLoading: loadingSprint } =
+    useActiveSprint();
 
   const {
     data: statusList = [],
@@ -106,20 +105,20 @@ const IssueModal: React.FC<IssueModalProps> = ({
     refetch: refetchStatus,
   } = useGetIssueStatus(sprintId);
 
-  const {
-    data: activeSprintList = [],
-    isLoading: loadingSprint,
-    refetch: refetchAtiveSprint,
-  } = useActiveSprintByProject(projectId);
+  // const {
+  //   data: activeSprintList = [],
+  //   isLoading: loadingSprint,
+  //   refetch: refetchAtiveSprint,
+  // } = useActiveSprintByProject(projectId);
 
   useEffect(() => {
     if (sprintId) {
       refetchStatus();
     }
-    if (projectId) {
-      refetchAtiveSprint();
-    }
-  }, [sprintId, refetchStatus, projectId, refetchAtiveSprint]);
+    // if (projectId) {
+    //   refetchAtiveSprint();
+    // }
+  }, [sprintId, refetchStatus]);
 
   // Prefill when editing
   useEffect(() => {
@@ -137,7 +136,6 @@ const IssueModal: React.FC<IssueModalProps> = ({
         status: undefined,
         priority: undefined,
         tags: [],
-        projectId: undefined,
         sprintId: parrentSprintId || undefined,
         assigneeId: undefined,
         reporterId: undefined,
@@ -147,11 +145,29 @@ const IssueModal: React.FC<IssueModalProps> = ({
     }
   }, [mode, selectedIssue]);
 
+  const getProjectIdBySprintId = (sprintId: number) =>
+    activeSprintList.find((s: any) => s.id === sprintId)?.project_id;
+
   // ADD
   const handleAdd = (data: IssueFormValues) => {
-    Cookies.set('action_project_id', projectId?.toString())
+
+    const projectId = getProjectIdBySprintId(sprintId)
+    if (projectId) {
+      Cookies.set('action_project_id', projectId.toString())
+    }
+
+    let payload = {
+      ...data, createdBy: currentUser?.id, parentIssueId: parrentId
+    }
+    if (parrentSprintId) {
+      payload = {
+        ...payload,
+        sprintId: parrentSprintId
+      }
+    }
+
     mutationAdd(
-      { ...data, createdBy: currentUser?.id, parentIssueId: parrentId },
+      payload,
       {
         onSuccess: () => {
           toast.success("Issue added successfully!");
@@ -169,8 +185,24 @@ const IssueModal: React.FC<IssueModalProps> = ({
   const handleEdit = (data: IssueFormValues) => {
     if (!selectedIssue) return;
 
+    const projectId = getProjectIdBySprintId(sprintId)
+    if (projectId) {
+      Cookies.set('action_project_id', projectId.toString())
+    }
+
+    let payload = {
+      ...data, createdBy: currentUser?.id
+    }
+    if (parrentSprintId) {
+      payload = {
+        ...payload,
+        sprintId: parrentSprintId
+      }
+    }
+
+
     mutationEdit(
-      { id: selectedIssue.id, data: { ...data, createdBy: currentUser?.id } },
+      { id: selectedIssue.id, data: payload },
       {
         onSuccess: () => {
           toast.success("Issue updated successfully!");
@@ -247,35 +279,12 @@ const IssueModal: React.FC<IssueModalProps> = ({
           />
         </FormRow>
 
-        <FormRow label="Project" error={errors.projectId?.message}>
-          <Controller
-            name="projectId"
-            control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
-                allowClear
-                value={field.value ?? undefined}
-                loading={loadingProject}
-                placeholder="Select project"
-                className="w-full"
-                onChange={(v) => field.onChange(v ?? null)}
-                options={projectList.map((s: any) => ({
-                  value: s.id,
-                  label: s.name,
-                }))}
-                showSearch
-              />
-            )}
-          />
-        </FormRow>
-
         {/* Sprint */}
-        {/* <FormRow label="Active Sprint" error={errors.sprintId?.message}>
+        <FormRow label="Active Sprint" error={errors.sprintId?.message}>
           <Controller
             name="sprintId"
             control={control}
-            disabled={!!parrentSprintId || !projectId}
+            disabled={!!parrentSprintId}
             render={({ field }) => (
               <Select
                 {...field}
@@ -293,9 +302,9 @@ const IssueModal: React.FC<IssueModalProps> = ({
               />
             )}
           />
-        </FormRow> */}
+        </FormRow>
 
-        <FormRow label="Active Sprint" error={errors.sprintId?.message}>
+        {/* <FormRow label="Active Sprint" error={errors.sprintId?.message}>
           {watch("projectId") && activeSprintList ? (
             <Controller
               name="sprintId"
@@ -321,7 +330,7 @@ const IssueModal: React.FC<IssueModalProps> = ({
           ) : (
             <span className="text-red-500">Please select project</span>
           )}
-        </FormRow>
+        </FormRow> */}
 
         {/* Status */}
         <FormRow label="Status" error={errors.status?.message}>
@@ -340,7 +349,7 @@ const IssueModal: React.FC<IssueModalProps> = ({
                   options={statusList.map((status: any) => ({
                     value:
                       IssueStatus[
-                        status.name.toUpperCase() as keyof typeof IssueStatus
+                      status.name.toUpperCase() as keyof typeof IssueStatus
                       ],
                     label: <IssueStatusTag status={status.name} />,
                   }))}

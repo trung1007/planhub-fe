@@ -8,19 +8,19 @@ import CommentTab from "./CommentTab";
 import HistoryTab from "./HistoryTab";
 
 interface CreatedInfo {
-  fullName: string;
-  username: string;
-  createdAt: string; // hoặc Date nếu bạn muốn
+    fullName: string;
+    username: string;
+    createdAt: string; // hoặc Date nếu bạn muốn
 }
 
-const CommentActivity = ({ issueId, createdInfor }: { issueId: number; createdInfor: CreatedInfo }) => {
+const CommentActivity = ({ issueId, createdInfor, projectId }: { issueId: number; createdInfor: CreatedInfo, projectId?: number }) => {
     const [showActivity, setShowActivity] = useState(true);
 
     const commentTab = {
         key: "comments",
         label: "Comments",
         children: (
-            <CommentTab issueId={issueId} key={JSON.stringify(issueId)} />
+            <CommentTab issueId={issueId} key={JSON.stringify(issueId)} projectId={projectId} />
         ),
     };
 

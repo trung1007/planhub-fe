@@ -7,8 +7,9 @@ import { useState } from "react"
 import { FaEdit, FaTrash, FaUser } from "react-icons/fa"
 import { MdCancel, MdOutlineDone } from "react-icons/md"
 import { toast } from "react-toastify"
+import Cookies from "js-cookie";
 
-const CommentElement = ({ comment, currentUser }: { comment: any, currentUser: any }) => {
+const CommentElement = ({ comment, currentUser, projectId }: { comment: any, currentUser: any, projectId?: number }) => {
     const [isEditing, setIsEditing] = useState(false)
 
     const [localContent, setLocalContent] = useState(comment.content);
@@ -31,6 +32,9 @@ const CommentElement = ({ comment, currentUser }: { comment: any, currentUser: a
             content: localContent.trim(),
             created_by: currentUser.id
         }
+        if (projectId) {
+            Cookies.set('action_project_id', projectId.toString())
+        }
         editComment(
             {
                 id: comment.id,
@@ -49,6 +53,9 @@ const CommentElement = ({ comment, currentUser }: { comment: any, currentUser: a
     };
 
     const handleDelete = () => {
+        if (projectId) {
+            Cookies.set('action_project_id', projectId.toString())
+        }
         deleteComment(comment.id, {
             onSuccess: () => {
                 toast.success("Comment deleted");

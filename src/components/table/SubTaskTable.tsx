@@ -12,14 +12,17 @@ import { IssueTypeTag } from "../tag/IssueTypeTag";
 import { IssueTagList } from "../tag/IssueTagList";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import Cookies from "js-cookie";
 import IssueModal from "../modal/IssueModal";
 
 const SubTaskTable = ({
   issueId,
   parrentSprintId,
+  projectId
 }: {
   issueId: number;
   parrentSprintId?: number;
+  projectId?: number
 }) => {
   const limit = 10;
   const [page, setPage] = useState(1);
@@ -152,11 +155,17 @@ const SubTaskTable = ({
     setSelectedIssue({
       ...record,
       parentIssueId: issueId,
+      parrentSprintId: parrentSprintId
     });
     setOpenEdit(true);
   };
 
   const handleDelete = (record: any) => {
+
+    if (projectId) {
+      Cookies.set('action_project_id', projectId.toString())
+    }
+
     mutate(record.id, {
       onSuccess: () => {
         toast.success("Delete issue successful");

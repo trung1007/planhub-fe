@@ -4,7 +4,7 @@ import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import SmoothToggle from "./SmothToggle";
 import SubTaskTable from "./table/SubTaskTable";
 
-const SubTaskIssue = ({ issueId, issueSubTaskNum, parrentSprintId }: { issueId: number, issueSubTaskNum: number, parrentSprintId?:number }) => {
+const SubTaskIssue = ({ issueId, issueSubTaskNum, parrentSprintId, projectId }: { issueId: number, issueSubTaskNum: number, parrentSprintId?:number, projectId?:number }) => {
     const [showSubTasks, setShowSubTasks] = useState(true);
 
     return (
@@ -18,7 +18,7 @@ const SubTaskIssue = ({ issueId, issueSubTaskNum, parrentSprintId }: { issueId: 
             </div>
             <SmoothToggle open={showSubTasks}>
                 {showSubTasks && (
-                    <SubTaskTable issueId={issueId} parrentSprintId={parrentSprintId}/>
+                    <SubTaskTable issueId={issueId} parrentSprintId={parrentSprintId} projectId={projectId} />
                 )}
             </SmoothToggle>
         </div>

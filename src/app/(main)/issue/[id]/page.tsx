@@ -103,6 +103,7 @@ const DetailIssue = () => {
                                 return sprint ? `${sprint.name}` : "Not Found";
                             }}
                             issueId={issueIdNumber}
+                            projectId={issueInfo?.projectId}
                             currentIssueValue={issueInfo}
                             property="sprintId"
                         />
@@ -116,6 +117,7 @@ const DetailIssue = () => {
                             }))}
                             renderValue={() => <IssueTypeTag type={issueInfo.type} />}
                             issueId={issueIdNumber}
+                            projectId={issueInfo?.projectId}
                             currentIssueValue={issueInfo}
                             property="type"
                         />
@@ -130,6 +132,7 @@ const DetailIssue = () => {
                             }))}
                             renderValue={() => <IssueTagList tags={issueInfo.tags} />}
                             issueId={issueIdNumber}
+                            projectId={issueInfo?.projectId}
                             currentIssueValue={issueInfo}
                             property="tags"
                         />
@@ -150,6 +153,7 @@ const DetailIssue = () => {
                                 return user ? `${user.username}` : "Unassigned";
                             }}
                             issueId={issueIdNumber}
+                            projectId={issueInfo?.projectId}
                             currentIssueValue={issueInfo}
                             property="assigneeId"
                         />
@@ -165,6 +169,7 @@ const DetailIssue = () => {
                                 return user ? `${user.username}` : "Unassigned";
                             }}
                             issueId={issueIdNumber}
+                            projectId={issueInfo?.projectId}
                             currentIssueValue={issueInfo}
                             property="reporterId"
                         />
@@ -178,6 +183,7 @@ const DetailIssue = () => {
                             }))}
                             renderValue={() => <IssueStatusTag status={issueInfo.status} />}
                             issueId={issueIdNumber}
+                            projectId={issueInfo?.projectId}
                             currentIssueValue={issueInfo}
                             property="status"
                         />
@@ -191,6 +197,7 @@ const DetailIssue = () => {
                             }))}
                             renderValue={() => <IssuePriorityTag priority={issueInfo.priority} />}
                             issueId={issueIdNumber}
+                            projectId={issueInfo?.projectId}
                             currentIssueValue={issueInfo}
                             property="priority"
                         />
@@ -210,6 +217,7 @@ const DetailIssue = () => {
                         property="description"
                         label="Description"
                         issueId={issueIdNumber}
+                        projectId={issueInfo?.projectId}
                         currentIssueValue={issueInfo}
                         value={issueInfo.description}
                         editType="textarea"
@@ -221,12 +229,12 @@ const DetailIssue = () => {
             </div>
 
             {/* Attachments */}
-            <AttachmentUpload issueId={issueIdNumber} />
+            <AttachmentUpload issueId={issueIdNumber} projectId={issueInfo?.projectId} />
             {/* Sub-task */}
-            <SubTaskIssue issueId={issueIdNumber} issueSubTaskNum={issueInfo.subtasksNum | 0} parrentSprintId={issueInfo.sprintId} />
+            <SubTaskIssue issueId={issueIdNumber} issueSubTaskNum={issueInfo.subtasksNum | 0} parrentSprintId={issueInfo.sprintId}  projectId={issueInfo?.projectId}  />
 
             {/* Activity */}
-            <CommentActivity issueId={issueIdNumber} createdInfor={createdInfor} />
+            <CommentActivity issueId={issueIdNumber} createdInfor={createdInfor} projectId={issueInfo?.projectId} />
         </div>
     );
 };

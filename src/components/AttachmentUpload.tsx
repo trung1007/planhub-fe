@@ -7,8 +7,10 @@ import { AttachmentFormValues } from "@/schemas/attachment.schema";
 import SmoothToggle from "./SmothToggle";
 import { toast } from "react-toastify";
 import { IoMdDownload } from "react-icons/io";
+import Cookies from "js-cookie";
 
-const AttachmentUpload = ({ issueId }: { issueId: number }) => {
+
+const AttachmentUpload = ({ issueId, projectId }: { issueId: number, projectId?: number }) => {
     const [showAttachment, setShowAttachment] = useState(true);
     const [attachmentError, setAttachmentError] = useState<string | null>(null);
     const [fileList, setFileList] = useState<File[]>([]); // List of files selected by user
@@ -45,7 +47,9 @@ const AttachmentUpload = ({ issueId }: { issueId: number }) => {
                 issue_id: issueId,
                 file,
             };
-
+            if (projectId) {
+                Cookies.set('action_project_id', projectId.toString())
+            }
             uploadFile(data, {
                 onSuccess: () => {
                     toast.success(`Uploaded ${file.name} successfully!`);
@@ -119,7 +123,7 @@ const AttachmentUpload = ({ issueId }: { issueId: number }) => {
                                 <Button
                                     size="small"
                                     type="dashed"
-                                    onClick={()=>handleDownload(attachment)}
+                                    onClick={() => handleDownload(attachment)}
                                 >
                                     <IoMdDownload />
                                 </Button>

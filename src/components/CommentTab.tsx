@@ -7,8 +7,10 @@ import TextArea from "antd/es/input/TextArea";
 import { useState } from "react";
 import { FaEdit, FaTrash, FaUser } from "react-icons/fa";
 import CommentElement from "./CommentElement";
+import Cookies from "js-cookie";
+import { toast } from "react-toastify";
 
-const CommentTab = ({ issueId }: { issueId: number }) => {
+const CommentTab = ({ issueId, projectId }: { issueId: number, projectId?: number }) => {
 
     const [content, setContent] = useState("");
     const {
@@ -30,6 +32,9 @@ const CommentTab = ({ issueId }: { issueId: number }) => {
             message.error("You must be logged in to comment");
             return;
         }
+        if (projectId) {
+            Cookies.set('action_project_id', projectId.toString())
+        }
         addComment(
             {
                 issue_id: issueId,
@@ -39,10 +44,10 @@ const CommentTab = ({ issueId }: { issueId: number }) => {
             {
                 onSuccess: () => {
                     setContent("");
-                    message.success("Comment added");
+                    toast.success("Comment added");
                 },
                 onError: () => {
-                    message.error("Failed to add comment");
+                    toast.error("Failed to add comment");
                 },
             }
         );
@@ -72,7 +77,7 @@ const CommentTab = ({ issueId }: { issueId: number }) => {
             {!isLoading &&
                 !isError &&
                 comments.map((c: any) => (
-                    <CommentElement key={JSON.stringify(c)} comment={c} currentUser = {currentUser} />
+                    <CommentElement key={JSON.stringify(c)} comment={c} currentUser={currentUser} projectId={projectId} />
                 ))}
 
             {/* Ô nhập comment mới */}

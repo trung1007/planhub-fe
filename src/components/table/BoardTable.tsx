@@ -27,9 +27,8 @@ const BoardTable = () => {
                         workflow={scrum.workflow} />
                 ))
             ) : (
-                <p>No projects available</p>
+                <p>No worlflow issues available</p>
             )}
-            {/* <DragableBoard key={'123123'} /> */}
 
         </div>
     );

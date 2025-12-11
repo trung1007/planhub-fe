@@ -18,6 +18,7 @@ import { IssueTagList } from "../tag/IssueTagList";
 import { IssueStatusTag } from "../tag/IssueStatusTag";
 import { IssuePriorityTag } from "../tag/IssuePriorityTag";
 import { IssueTypeTag } from "../tag/IssueTypeTag";
+import Cookies from "js-cookie";
 
 const IssueTable = () => {
   const limit = 10;
@@ -210,6 +211,7 @@ const IssueTable = () => {
   };
 
   const handleDelete = (record: any) => {
+    Cookies.set("action_project_id", record.projectId.toString());
     mutate(record.id, {
       onSuccess: () => {
         toast.success("Delete issue successful");
@@ -261,7 +263,7 @@ const IssueTable = () => {
           style: { cursor: "pointer" },
         })}
         scroll={{ x: true }}
-        // tableLayout="fixed"
+      // tableLayout="fixed"
       />
       {openAdd && <IssueModal open={openAdd} setOpen={setOpenAdd} mode="add" />}
       {openEdit && (

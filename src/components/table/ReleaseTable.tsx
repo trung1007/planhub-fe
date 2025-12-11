@@ -10,6 +10,7 @@ import { formatDateDMY } from "@/utils/format";
 import { useAllRelease, useDeleteRelease } from "@/hooks/useRelease";
 import ReleaseModal from "../modal/ReleaseModal";
 import ReleaseStatusTag from "../tag/ReleaseStatusTag";
+import Cookies from "js-cookie";
 
 const ReleaseTable = () => {
     const limit = 10
@@ -119,6 +120,7 @@ const ReleaseTable = () => {
     };
 
     const handleDelete = (record: any) => {
+        Cookies.set("action_project_id", record.projectId.toString());
         mutate(record.id, {
             onSuccess: () => {
                 toast.success("Delete release successful");
