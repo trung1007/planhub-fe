@@ -9,6 +9,8 @@ import { z } from "zod";
 export const IssueSchema = z.object({
   id: z.number().optional(),
 
+  projectId: z.number().nullable().optional(),
+
   sprintId: z.number().nullable().optional(),
 
   type: z.enum(IssueType),

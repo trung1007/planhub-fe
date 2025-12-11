@@ -1,6 +1,5 @@
 import api from "@/lib/axios";
 import { LoginInput, RegisterInput } from "@/schemas/user.schema";
-import { id } from "zod/locales";
 
 export const registerUser = async (data: RegisterInput) => {
   const response = await api.post("/auth/register", data);

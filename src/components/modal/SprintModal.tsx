@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Modal, Select, DatePicker, Input, Checkbox } from "antd";
 import { Controller, useForm } from "react-hook-form";
 import FormRow from "../FormRow";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { useAppSelector } from "@/hooks/reduxHook";
 import dayjs from "dayjs";
@@ -13,10 +13,13 @@ import { ActionSprintInput, ACtionSprintSchema } from "@/schemas/sprint-schema";
 import { useAddSprint, useEditSprint } from "@/hooks/useSprint";
 import { useListRelease } from "@/hooks/useRelease";
 import { formatDateDMY } from "@/utils/format";
+import { useListProject } from "@/hooks/useProject";
+import Cookies from "js-cookie";
 // đổi theo project của bạn
 
 type Sprint = {
   id: number;
+  projectId:number;
   releaseId: number;
   name: string;
   key: string;
@@ -45,12 +48,14 @@ const SprintModal: React.FC<SprintModalProps> = ({
     handleSubmit,
     control,
     reset,
+    watch,
     formState: { errors },
   } = useForm<ActionSprintInput>({
     resolver: zodResolver(ACtionSprintSchema),
     defaultValues: {
       name: undefined,
       key: undefined,
+      projectId: undefined,
       releaseId: undefined,
       isActive: false,
       startDate: undefined,
@@ -62,9 +67,20 @@ const SprintModal: React.FC<SprintModalProps> = ({
   // =============================
   // 1) CALL API HOOKS
   // =============================
+  const { data: projectList } = useListProject();
+
   const { data: releaseList } = useListRelease();
 
   const currentUser = useAppSelector((state) => state.auth.user);
+
+  const projecIdSelected = watch("projectId");
+
+  const listReleaseSelect = useMemo(() => {
+    if (!releaseList) return [];
+    return releaseList.filter(
+      (item: any) => item.project_id === Number(projecIdSelected)
+    );
+  }, [releaseList, projecIdSelected]);
 
   const { mutate: mutationAdd, isPending: isAdding } = useAddSprint();
   const { mutate: mutationEdit, isPending: isEditing } = useEditSprint();
@@ -78,6 +94,7 @@ const SprintModal: React.FC<SprintModalProps> = ({
       reset({
         name: selectedSprint.name,
         key: selectedSprint.key,
+        projectId:selectedSprint.projectId,
         releaseId: selectedSprint.releaseId,
         isActive: selectedSprint.isActive,
         startDate: selectedSprint.startDate
@@ -111,7 +128,7 @@ const SprintModal: React.FC<SprintModalProps> = ({
         endDate: formatDateDMY(data.endDate),
         createdId: currentUser.id,
       };
-
+      Cookies.set("action_project_id", projecIdSelected.toString());
       mutationAdd(payload, {
         onSuccess: () => {
           toast.success("Srpint add successfully!");
@@ -138,6 +155,7 @@ const SprintModal: React.FC<SprintModalProps> = ({
         endDate: formatDateDMY(data.endDate),
         createdId: currentUser.id,
       };
+      Cookies.set("action_project_id", projecIdSelected.toString());
       mutationEdit(
         { id: selectedSprint.id, data: payload },
         {
@@ -160,14 +178,12 @@ const SprintModal: React.FC<SprintModalProps> = ({
   };
 
   const handleSave = (data: ActionSprintInput) => {
-    // Nếu edit sprint
     if (mode === "edit" && selectedSprint) {
       const isTurningOff =
         selectedSprint.isActive === true && data.isActive === false;
       const numOfIssue = selectedSprint.numOfIssue || 0;
 
       if (isTurningOff && numOfIssue > 0) {
-        // Lưu tạm data, show confirm
         setPendingEditData(data);
         setConfirmCloseModal(true);
         return;
@@ -175,20 +191,8 @@ const SprintModal: React.FC<SprintModalProps> = ({
 
       return handleEdit(data);
     }
-
-    // Add sprint bình thường
     return handleAdd(data);
   };
-
-  //   const handleSave = (data: ActionSprintInput) => {
-  //     console.log(data);
-
-  //     if (mode === "add") {
-  //       return handleAdd(data);
-  //     } else {
-  //       return handleEdit(data);
-  //     }
-  //   };
 
   const title = mode === "add" ? "Add Sprint" : "Edit Sprint";
 
@@ -237,16 +241,35 @@ const SprintModal: React.FC<SprintModalProps> = ({
           />
         </FormRow>
 
+        <FormRow label="Project" error={errors.projectId?.message}>
+          <Controller
+            name="projectId"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                placeholder="Select project"
+                className="w-full"
+                options={projectList?.map((p: any) => ({
+                  label: p.name,
+                  value: p.id,
+                }))}
+              />
+            )}
+          />
+        </FormRow>
+
         <FormRow label="Release" error={errors.releaseId?.message}>
           <Controller
             name="releaseId"
             control={control}
+            disabled={!projecIdSelected}
             render={({ field }) => (
               <Select
                 {...field}
                 placeholder="Select release"
                 className="w-full"
-                options={releaseList?.map((p: any) => ({
+                options={listReleaseSelect?.map((p: any) => ({
                   label: p.name,
                   value: p.id,
                 }))}

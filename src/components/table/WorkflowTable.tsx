@@ -6,10 +6,9 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import ButtonGroup from "../ButtonGroupTable";
 import { toast } from "react-toastify";
 import { formatDateDMY } from "@/utils/format";
-import ReleaseModal from "../modal/ReleaseModal";
-import ReleaseStatusTag from "../tag/ReleaseStatusTag";
 import { useAllWorkflow, useDeleteWorkflow } from "@/hooks/useWorkflow";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 const WorkflowTable = () => {
   const limit = 10;
@@ -115,12 +114,17 @@ const WorkflowTable = () => {
   };
 
   const handleDelete = (record: any) => {
+    Cookies.set("action_project_id", record.projectId.toString());
     mutate(record.id, {
       onSuccess: () => {
         toast.success("Delete workflow successful");
       },
-      onError: () => {
-        toast.error("Delete workflow failed");
+       onError: (error: any) => {
+        if (error?.response?.data?.statusCode === 403) {
+          toast.error(error?.response?.data?.message);
+        } else {
+          toast.error("Delete workflow failed");
+        }
       },
     });
   };

@@ -24,6 +24,7 @@ import {
 } from "@/hooks/useWorkflow";
 import { toast } from "react-toastify";
 import { IssueStatusTag } from "@/components/tag/IssueStatusTag";
+import Cookies from "js-cookie";
 
 // ==============================
 // Types
@@ -42,8 +43,8 @@ interface TransitionItem {
   name: string;
   from: string | null;
   to: string;
-  fromId: number,
-  toId: number,
+  fromId: number;
+  toId: number;
 }
 
 const ActionWorkflow = ({ id }: { id?: number }) => {
@@ -79,6 +80,7 @@ const ActionWorkflow = ({ id }: { id?: number }) => {
     handleSubmit,
     reset,
     formState: { errors },
+    watch,
   } = useForm<WorkflowInput>({
     resolver: zodResolver(WorkflowSchema),
     defaultValues: {
@@ -102,6 +104,8 @@ const ActionWorkflow = ({ id }: { id?: number }) => {
       description: workflowDetail.description,
     });
   }, [workflowDetail]);
+
+  const projectId = watch("projectId");
 
   useEffect(() => {
     if (!statusList) return;
@@ -127,7 +131,7 @@ const ActionWorkflow = ({ id }: { id?: number }) => {
         from: t.from,
         to: t.to,
         fromId: t.status_id_from,
-        toId: t.status_id_to
+        toId: t.status_id_to,
       }))
     );
   }, [transitionList]);
@@ -257,6 +261,7 @@ const ActionWorkflow = ({ id }: { id?: number }) => {
       transitions: listTransitionTemp,
     };
     if (id) {
+      Cookies.set("action_project_id", projectId.toString());
       mutationEdit(
         { id: id, data: payload },
         {
@@ -264,22 +269,37 @@ const ActionWorkflow = ({ id }: { id?: number }) => {
             toast.success("Update workflow successfully");
             router.push("/workflow");
           },
+          // onError: (error: any) => {
+          //   console.log("error:", error);
+          //   toast.error("Update workflow failed");
+          // },
           onError: (error: any) => {
-            console.log("error:", error);
-            toast.error("Update workflow failed");
+            if (error?.response?.data?.statusCode === 403) {
+              toast.error(error?.response?.data?.message);
+            } else {
+              toast.error("Update workflow failed");
+            }
           },
         }
       );
     } else {
+      Cookies.set("action_project_id", projectId.toString());
       mutationAdd(payload, {
         onSuccess: () => {
           toast.success("Create workflow successfully");
           router.push("/workflow");
         },
         onError: (error: any) => {
-          console.log("error:", error);
-          toast.error("Created workflow failed");
+          if (error?.response?.data?.statusCode === 403) {
+            toast.error(error?.response?.data?.message);
+          } else {
+            toast.error("Created workflow failed");
+          }
         },
+        // onError: (error: any) => {
+        //   console.log("error:", error);
+        //   toast.error("Created workflow failed");
+        // },
       });
     }
   };
@@ -362,9 +382,7 @@ const ActionWorkflow = ({ id }: { id?: number }) => {
   const handleDeleteStatus = (id: number) => {
     setListStatusTemp((prev) => prev.filter((s) => s.id !== id));
     setListTransitionTemp((prev) =>
-      prev.filter(
-        (t) => t.fromId !== id && t.toId !== id
-      )
+      prev.filter((t) => t.fromId !== id && t.toId !== id)
     );
   };
 

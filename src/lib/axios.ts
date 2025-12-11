@@ -27,7 +27,13 @@ const processQueue = (error: any, token: string | null = null) => {
 api.interceptors.request.use((config) => {
   const access_token = Cookies.get("access_token");
 
+  const action_project_id = Cookies.get("action_project_id");
+
   if (access_token) config.headers.Authorization = `Bearer ${access_token}`;
+  if (action_project_id) {
+    config.headers["X-Project-Id"] = action_project_id;
+  }
+
   return config;
 });
 
@@ -35,7 +41,7 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-  
+
     if (!error.response) return Promise.reject(error);
 
     // Khi bị 401
@@ -85,6 +91,5 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
 
 export default api;

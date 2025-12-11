@@ -43,6 +43,7 @@ const DragableTable = ({ index, project, issues, workflow }:
             >
                 <DragableBoard
                     key={project.id}
+                    projectId = {project.id}
                     issues={issues}
                     workflow={workflow}
                 />

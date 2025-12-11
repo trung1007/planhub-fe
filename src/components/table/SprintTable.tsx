@@ -11,6 +11,7 @@ import { useAllRelease, useDeleteRelease } from "@/hooks/useRelease";
 import ReleaseStatusTag from "../tag/ReleaseStatusTag";
 import SprintModal from "../modal/SprintModal";
 import { useAllSprint, useDeleteSprint } from "@/hooks/useSprint";
+import Cookies from "js-cookie";
 
 const SprintTable = () => {
   const limit = 10;
@@ -126,19 +127,22 @@ const SprintTable = () => {
   };
 
   const handleEdit = (record: any) => {
-    console.log("record:", record);
-
     setSelectedSprint(record);
     setOpenEdit(true);
   };
 
   const handleDelete = (record: any) => {
+    Cookies.set("action_project_id", record.projectId.toString());
     mutate(record.id, {
       onSuccess: () => {
         toast.success("Delete sprint successful");
       },
-      onError: () => {
-        toast.error("Delete sprint failed");
+      onError: (error: any) => {
+        if (error?.response?.data?.statusCode === 403) {
+          toast.error(error?.response?.data?.message);
+        } else {
+          toast.error("Delete sprint failed");
+        }
       },
     });
   };

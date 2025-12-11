@@ -102,16 +102,6 @@ const UsersTable = () => {
               </Button>
             </Popconfirm>
           )}
-          {/* <Popconfirm
-            title="Delete this user?"
-            onConfirm={() => handleDelete(record)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button danger size="small">
-              <FaTrash />
-            </Button>
-          </Popconfirm> */}
         </div>
       ),
     },

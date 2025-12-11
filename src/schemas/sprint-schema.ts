@@ -4,6 +4,10 @@ import { z } from "zod";
 export const ACtionSprintSchema = z.object({
   name: z.string().min(1, "Name is required"),
   key: z.string().min(1, "Key is required"),
+  projectId: z
+    .number()
+    .int()
+    .refine((v) => !isNaN(v), "Project is required"),
   releaseId: z
     .number()
     .int()
