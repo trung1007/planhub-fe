@@ -4,7 +4,7 @@ import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import SmoothToggle from "./SmothToggle";
 import SubTaskTable from "./table/SubTaskTable";
 
-const SubTaskIssue = ({ issueId, issueSubTaskNum, parrentSprintId, projectId }: { issueId: number, issueSubTaskNum: number, parrentSprintId?:number, projectId?:number }) => {
+const SubTaskIssue = ({ issueId, issueSubTaskNum, parrentSprintId, projectId }: { issueId: number, issueSubTaskNum: number, parrentSprintId?: number, projectId?: number }) => {
     const [showSubTasks, setShowSubTasks] = useState(true);
 
     return (
@@ -13,9 +13,13 @@ const SubTaskIssue = ({ issueId, issueSubTaskNum, parrentSprintId, projectId }: 
                 className="flex justify-between items-center cursor-pointer"
                 onClick={() => setShowSubTasks(!showSubTasks)}
             >
-                <p className="font-semibold">Sub-task ({issueSubTaskNum})</p>
+                <div className="flex items-center gap-2">
+                    <p className="font-semibold">Sub-task ({issueSubTaskNum})</p>
+                    <div>Add subtask with AI agent</div>
+                </div>
                 {showSubTasks ? <FiChevronUp /> : <FiChevronDown />}
             </div>
+
             <SmoothToggle open={showSubTasks}>
                 {showSubTasks && (
                     <SubTaskTable issueId={issueId} parrentSprintId={parrentSprintId} projectId={projectId} />
