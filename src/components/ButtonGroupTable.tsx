@@ -41,7 +41,7 @@ const ButtonGroup = ({
         <>
             <div className="flex py-3 justify-between">
                 {/* LEFT BUTTONS */}
-                <div className="flex gap-3">
+                <div className="flex gap-4">
                     {leftButtons.map((btn, index) => (
                         <button
                             key={index}

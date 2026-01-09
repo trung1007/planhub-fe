@@ -37,7 +37,7 @@ const DragableTable = ({ index, project, issues, workflow }:
                 className={`
     overflow-hidden transition-all duration-700 ease-in-out
     ${visibleScumboard
-                        ? "max-h-[400px] opacity-100 translate-y-0  ease-[cubic-bezier(0.2,0.8,0.2,1)]"
+                        ? " opacity-100 translate-y-0  ease-[cubic-bezier(0.2,0.8,0.2,1)]"
                         : "max-h-0 opacity-0 -translate-y-3 ease-in "}
   `}
             >

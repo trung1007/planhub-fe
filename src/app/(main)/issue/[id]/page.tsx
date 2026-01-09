@@ -231,7 +231,7 @@ const DetailIssue = () => {
             {/* Attachments */}
             <AttachmentUpload issueId={issueIdNumber} projectId={issueInfo?.projectId} />
             {/* Sub-task */}
-            <SubTaskIssue issueId={issueIdNumber} issueSubTaskNum={issueInfo.subtasksNum | 0} parrentSprintId={issueInfo.sprintId}  projectId={issueInfo?.projectId}  />
+            <SubTaskIssue issueId={issueIdNumber} parrentSprintId={issueInfo.sprintId}  projectId={issueInfo?.projectId}  />
 
             {/* Activity */}
             <CommentActivity issueId={issueIdNumber} createdInfor={createdInfor} projectId={issueInfo?.projectId} />

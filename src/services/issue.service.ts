@@ -15,6 +15,14 @@ export const createIssue = async (data: IssueFormValues) => {
   const response = await api.post("/core-service/issues", data);
   return response.data;
 };
+
+export const generateSubtask = async (id: number, max_subtasks: number) => {
+  const response = await api.post(
+    `/core-service/issues/generate-by-ai-agent/${id}`,
+    { max_subtasks }
+  );
+  return response.data;
+};
 export const assignIssueToSprint = async (issueId: number) => {
   const response = await api.post(
     "/core-service/issues/assign-to-active-sprint",
@@ -30,7 +38,7 @@ export const getIssueById = async (id: number) => {
 export const editIssue = async (id: number, data: IssueFormValues) => {
   const response = await api.patch(
     `/core-service/issues/${id}`,
-    data,
+    data
     // {
     //   headers: {
     //     sprintId: data.sprintId,

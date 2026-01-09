@@ -7,6 +7,7 @@ import {
   createIssue,
   deleteIssue,
   editIssue,
+  generateSubtask,
   getAllIssue,
   getAllIssueIds,
   getIssueById,
@@ -73,6 +74,33 @@ export const useAddIssue = () => {
 
   return useMutation({
     mutationFn: (data: IssueFormValues) => createIssue(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["issues"], exact: false });
+      queryClient.invalidateQueries({
+        queryKey: ["listIssuesScrum"],
+        exact: false,
+      });
+
+      queryClient.invalidateQueries({ queryKey: ["subtasks"], exact: false });
+      queryClient.invalidateQueries({
+        queryKey: ["issueHistory"],
+        exact: false,
+      });
+    },
+  });
+};
+
+export const useGenerateSubtask = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      issueId,
+      max_subtasks,
+    }: {
+      issueId: number;
+      max_subtasks: number;
+    }) => generateSubtask(issueId, max_subtasks),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["issues"], exact: false });
       queryClient.invalidateQueries({
